@@ -1,0 +1,101 @@
+[tool.poetry]
+name = "pccontext"
+version = "0.1.0"
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+description = "Chain Contexts for PyCardano library"
+homepage = "https://github.com/Python-Cardano/pycardano"
+documentation = "https://pycardano.readthedocs.io/en/latest/"
+keywords = ["python", "cardano", "blockchain", "crypto"]
+authors = ["Hareem Adderley <haddderley@kingpinapps.com>"]
+readme = "README.md"
+repository = "https://github.com/KINGH242/pccontext.git"
+license = "MIT"
+
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+pycardano =  { git = "https://github.com/Python-Cardano/pycardano.git", branch = "chang" }
+koios-python = "^2.0.0"
+requests = "^2.32.3"
+cachetools = "^5.5.0"
+ogmios = "^1.2.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+black = "^24.8.0"
+flake8 = "^7.1.1"
+mypy = "^1.11.2"
+ruff = "^0.6.3"
+faker = "^28.4.1"
+pytest-cov = "^5.0.0"
+isort = "^5.13.2"
+flake8-pyproject = "^1.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-p no:cacheprovider"
+
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.1.0"
+version_files = [
+    "pccontexts/__init__.py:__version__",
+    "pyproject.toml:version"
+]
+update_changelog_on_bump = true
+style = [
+    ["qmark", "fg:#ff9d00 bold"],
+    ["question", "bold"],
+    ["answer", "fg:#ff9d00 bold"],
+    ["pointer", "fg:#ff9d00 bold"],
+    ["highlighted", "fg:#ff9d00 bold"],
+    ["selected", "fg:#cc5454"],
+    ["separator", "fg:#cc5454"],
+    ["instruction", ""],
+    ["text", ""],
+    ["disabled", "fg:#858585 italic"]
+]
+
+[tool.flake8]
+ignore = ['E231', 'E241', 'D203', 'E126', 'W503', 'E203']
+exclude = ['.git', '__pycache__', 'build', 'E126', 'W503', 'E203']
+per-file-ignores = [
+    '__init__.py:F401',
+]
+max-line-length = 120
+count = true
+
+
+[tool.ruff]
+lint.ignore = [
+    "E501",
+    "F841",
+]
+
+
+[tool.isort]
+profile = "black"
+
+
+[tool.mypy]
+ignore_missing_imports = true
+disable_error_code = ["str-bytes-safe"]
+python_version = 3.8
+

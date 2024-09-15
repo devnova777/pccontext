@@ -1,0 +1,186 @@
+from __future__ import annotations
+
+from pathlib import Path
+from typing import Optional, List, Union
+
+from pycardano import (
+    ChainContext,
+    UTxO,
+    Transaction,
+)
+
+from pccontext.enums import HistoryType, TransactionType
+from pccontext.exceptions import OfflineTransferFileError
+from pccontext.models import (
+    GenesisParameters,
+    ProtocolParameters,
+)
+from pccontext.models import (
+    OfflineTransfer,
+    OfflineTransferTransaction,
+    OfflineTransferHistory,
+)
+from pccontext.utils import (
+    dump_file,
+    check_file_exists,
+    load_json_file,
+)
+
+__all__ = ["OfflineTransferFileContext"]
+
+
+class OfflineTransferFileContext(ChainContext):
+    """
+    Offline transfer file context. To be used with the offline transfer file.
+    """
+
+    _offline_transfer_file: Path
+    """Path to the offline transfer file"""
+
+    _offline_transfer: OfflineTransfer
+    """Offline transfer file object model"""
+
+    _genesis_param: Optional[GenesisParameters]
+    """Genesis parameters"""
+
+    _protocol_param: Optional[ProtocolParameters]
+    """Protocol parameters"""
+
+    def __init__(
+        self,
+        offline_transfer_file: Path,
+    ):
+        super().__init__()
+        self._offline_transfer_file = offline_transfer_file
+        self._genesis_param = None
+        self._protocol_param = None
+        self._offline_transfer = self.load()
+
+    @property
+    def offline_transfer(self) -> OfflineTransfer:
+        """
+        Get the offline transfer file
+        :return: The offline transfer file
+        """
+        return self._offline_transfer
+
+    def check(self) -> None:
+        """
+        Check that the offlineTransfer.json file exist
+        :return: None
+        """
+        try:
+            check_file_exists(self._offline_transfer_file)
+        except FileNotFoundError:
+            print(
+                f"Offline transfer file is not a file or does not exist: "
+                f"{self._offline_transfer_file.as_posix()}\n"
+                f"Create a new one..."
+            )
+
+    def load(self) -> OfflineTransfer:
+        """
+        Load the offline transfer file
+        :return: The offline transfer file
+        """
+        try:
+            self.check()
+            return OfflineTransfer.from_json(
+                load_json_file(self._offline_transfer_file)
+            )
+        except FileNotFoundError as e:
+            raise OfflineTransferFileError(
+                f"Offline transfer file does not exist: {self._offline_transfer_file}"
+            ) from e
+
+    def _fetch_protocol_param(self) -> ProtocolParameters:
+        if not self._offline_transfer.protocol:
+            raise OfflineTransferFileError(
+                "Protocol parameters not found in the offline transfer file."
+            )
+        result = self._offline_transfer.protocol.parameters
+        if isinstance(result, ProtocolParameters):
+            return result
+        elif isinstance(result, dict):
+            return ProtocolParameters.from_json(result)
+        else:
+            return ProtocolParameters(**result.__dict__)
+
+    @property
+    def protocol_param(self) -> ProtocolParameters:
+        """Get current protocol parameters"""
+        if not self._protocol_param:
+            self._protocol_param = self._fetch_protocol_param()
+        return self._protocol_param
+
+    @property
+    def epoch(self) -> Union[int, None]:
+        """Current epoch number"""
+        if (
+            self._offline_transfer.protocol
+            and self._offline_transfer.protocol.parameters
+        ):
+            return self._offline_transfer.protocol.parameters.epoch
+        return None
+
+    @property
+    def era(self) -> Optional[str]:
+        """Current Cardano era"""
+        if self._offline_transfer.protocol:
+            return self._offline_transfer.protocol.era
+        return None
+
+    def _utxos(self, address: str) -> Optional[List[UTxO]]:
+        """
+        Get all UTxOs associated with an address.
+
+        Args:
+            address (str): An address encoded with bech32.
+
+        Returns:
+            List[UTxO]: A list of UTxOs or an empty list if the address is not found.
+        """
+
+        return next(
+            (
+                offline_address.utxos
+                for offline_address in self._offline_transfer.addresses
+                if address == str(offline_address.address)
+            ),
+            [],
+        )
+
+    def submit_tx_cbor(self, cbor: Union[bytes, str]):
+        """Save the transaction to the offline transfer file.
+
+        Args:
+            cbor (Union[bytes, str]): The serialized transaction to be submitted.
+
+        Raises:
+            :class:`InvalidArgumentException`: When the transaction is invalid.
+            :class:`TransactionFailedException`: When fails to submit the transaction to blockchain.
+        """
+        if isinstance(cbor, bytes):
+            cbor = cbor.hex()
+
+        tx_json = {
+            "type": f"Witnessed Tx {self.era}Era",
+            "description": "Generated by PyCardano",
+            "cborHex": cbor,
+        }
+
+        tx = Transaction.from_cbor(cbor)
+        offline_transaction = OfflineTransferTransaction(
+            type=TransactionType.TRANSACTION,
+            tx_json=tx_json,
+        )
+
+        action = HistoryType.SAVE_TRANSACTION.value(tx.id)
+
+        self._offline_transfer.transactions.append(offline_transaction)
+        self._offline_transfer.history.append(OfflineTransferHistory(action=action))
+
+        dump_file(
+            self._offline_transfer_file,
+            self._offline_transfer.to_json(),
+        )
