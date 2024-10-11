@@ -60,7 +60,7 @@ class AddressInfo(BaseModel):
     )
     used: Optional[bool] = False
     utxos: Optional[List[UTxO]] = field(default_factory=list)
-    rewards: Optional[List[StakeAddressInfo]] = field(default_factory=list)
+    stake_address_info: Optional[List[StakeAddressInfo]] = field(default_factory=list)
 
     def __post_init__(self):
         if (
@@ -135,7 +135,7 @@ class AddressInfo(BaseModel):
         """
         if field_name == "utxos":
             return AddressInfo._parse_utxos(value)
-        elif field_name == "rewards":
+        elif field_name == "stake_address_info":
             return StakeAddressInfo.from_dict(value)
 
     @staticmethod

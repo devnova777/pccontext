@@ -15,6 +15,8 @@ class GenesisParameters(BaseModel):
     Genesis parameters dataclass
     """
 
+    era: Optional[str] = field(default=None, metadata={"aliases": ["era"]})
+
     active_slots_coefficient: Optional[float] = field(
         default=None,
         metadata={

@@ -5,7 +5,10 @@ from fractions import Fraction
 from pathlib import Path
 from typing import Optional, Dict, List, Union, Type, Any
 
-from pycardano import ALONZO_COINS_PER_UTXO_WORD
+from pycardano import (
+    ALONZO_COINS_PER_UTXO_WORD,
+    ProtocolParameters as PyCardanoProtocolParameters,
+)
 
 from pccontext.models import BaseModel
 from pccontext.utils import dump_json_file
@@ -23,17 +26,19 @@ __all__ = [
 
 @dataclass(frozen=True)
 class CostModels(BaseModel):
-    plutus_v1: Optional[Union[Dict[str, int], List[int]]] = field(
+    plutus_v1: Optional[Union[Dict[Union[str, int], int], List[int]]] = field(
         default=None, metadata={"aliases": ["plutus_v1", "PlutusV1", "plutus:v1"]}
     )
-    plutus_v2: Optional[Union[Dict[str, int], List[int]]] = field(
+    plutus_v2: Optional[Union[Dict[Union[str, int], int], List[int]]] = field(
         default=None, metadata={"aliases": ["plutus_v2", "PlutusV2", "plutus:v2"]}
     )
-    plutus_v3: Optional[Union[Dict[str, int], List[int]]] = field(
+    plutus_v3: Optional[Union[Dict[Union[str, int], int], List[int]]] = field(
         default=None, metadata={"aliases": ["plutus_v3", "PlutusV3", "plutus:v3"]}
     )
 
-    def to_dict(self) -> Dict[str, Optional[List[int]]]:
+    def to_dict(
+        self,
+    ) -> Dict[str, Optional[Union[Dict[Union[str, int], int], List[int]]]]:
         """
         Serialize the cost models
         :return: The serialized cost models
@@ -112,8 +117,8 @@ class DRepVotingThresholds(BaseModel):
     @classmethod
     def clean_unwanted_fields(cls, init_args: Dict):
         unwanted_fields = ["constitutionalCommittee", "protocolParametersUpdate"]
-        for field in unwanted_fields:
-            init_args.pop(field, None)
+        for unwanted_field in unwanted_fields:
+            init_args.pop(unwanted_field, None)
 
     @classmethod
     def property_from_dict(
@@ -189,8 +194,8 @@ class PoolVotingThresholds(BaseModel):
     @classmethod
     def clean_unwanted_fields(cls, init_args: Dict):
         unwanted_fields = ["constitutionalCommittee"]
-        for field in unwanted_fields:
-            init_args.pop(field, None)
+        for unwanted_field in unwanted_fields:
+            init_args.pop(unwanted_field, None)
 
     @classmethod
     def property_from_dict(
@@ -390,7 +395,13 @@ class ProtocolParameters(BaseModel):
     )
     max_reference_scripts_size: Optional[int] = field(
         default=None,
-        metadata={"aliases": ["max_reference_scripts_size", "maxReferenceScriptsSize"]},
+        metadata={
+            "aliases": [
+                "max_reference_scripts_size",
+                "maxReferenceScriptsSize",
+                "maximum_reference_scripts_size",
+            ]
+        },
     )
     max_tx_execution_units: Optional[MaxExecutionUnits] = field(
         default=None,
@@ -443,6 +454,7 @@ class ProtocolParameters(BaseModel):
         default=None,
         metadata={
             "aliases": [
+                "min_fee_reference_scripts",
                 "min_fee_ref_script_cost_per_byte",
                 "minFeeRefScriptCostPerByte",
                 "minFeeReferenceScripts",
@@ -943,37 +955,127 @@ class ProtocolParameters(BaseModel):
         Dump the protocol parameters to a json file
         :param params_file: The json file to dump the protocol parameters
         """
+        cost_models: Dict = {}
+        if self.cost_models:
+            if isinstance(self.cost_models, CostModels):
+                cost_models = self.cost_models.to_dict()
+            else:
+                cost_models = self.cost_models
+
         protocol_parameters: Dict[str, Any] = {
             "collateralPercentage": self.collateral_percent,
             "committeeMaxTermLength": self.committee_max_term_length,
             "committeeMinSize": self.committee_min_size,
-            "costModels": self.cost_models.to_dict(),
+            "costModels": cost_models,
             "dRepActivity": self.d_rep_activity,
             "dRepDeposit": self.d_rep_deposit,
-            "dRepVotingThresholds": self.d_rep_voting_thresholds.to_dict(),
-            "executionUnitPrices": self.execution_unit_prices.to_dict(),
+            "dRepVotingThresholds": (
+                self.d_rep_voting_thresholds.to_dict()
+                if self.d_rep_voting_thresholds
+                else None
+            ),
+            "executionUnitPrices": (
+                self.execution_unit_prices.to_dict()
+                if self.execution_unit_prices
+                else None
+            ),
             "govActionDeposit": self.gov_action_deposit,
             "govActionLifetime": self.gov_action_lifetime,
             "maxBlockBodySize": self.max_block_size,
-            "maxBlockExecutionUnits": self.max_block_execution_units.to_dict(),
+            "maxBlockExecutionUnits": (
+                self.max_block_execution_units.to_dict()
+                if self.max_block_execution_units
+                else None
+            ),
             "maxBlockHeaderSize": self.max_block_header_size,
             "maxCollateralInputs": self.max_collateral_inputs,
-            "maxTxExecutionUnits": self.max_tx_execution_units.to_dict(),
+            "maxTxExecutionUnits": (
+                self.max_tx_execution_units.to_dict()
+                if self.max_tx_execution_units
+                else None
+            ),
             "maxTxSize": self.max_tx_size,
             "maxValueSize": self.max_val_size,
             "minFeeRefScriptCostPerByte": self.min_fee_ref_script_cost_per_byte,
             "minPoolCost": self.min_pool_cost,
-            "monetaryExpansion": self.monetary_expansion,
-            "poolPledgeInfluence": self.pool_influence,
+            "monetaryExpansion": (
+                float(self.monetary_expansion) if self.monetary_expansion else None
+            ),
+            "poolPledgeInfluence": (
+                float(self.pool_influence) if self.pool_influence else None
+            ),
             "poolRetireMaxEpoch": self.pool_retire_max_epoch,
-            "poolVotingThresholds": self.pool_voting_thresholds.to_dict(),
-            "protocolVersion": self.protocol_version.to_dict(),
+            "poolVotingThresholds": (
+                self.pool_voting_thresholds.to_dict()
+                if self.pool_voting_thresholds
+                else None
+            ),
+            "protocolVersion": (
+                self.protocol_version.to_dict() if self.protocol_version else None
+            ),
             "stakeAddressDeposit": self.key_deposit,
             "stakePoolDeposit": self.pool_deposit,
             "stakePoolTargetNum": self.pool_target_num,
-            "treasuryCut": self.treasury_expansion,
+            "treasuryCut": (
+                float(self.treasury_expansion) if self.treasury_expansion else None
+            ),
             "txFeeFixed": self.tx_fee_fixed,
             "txFeePerByte": self.tx_fee_per_byte,
             "utxoCostPerByte": self.utxo_cost_per_byte,
         }
         dump_json_file(params_file, protocol_parameters)
+
+    def to_pycardano(self) -> PyCardanoProtocolParameters:
+        """
+        Convert the protocol parameters to PyCardano protocol parameters
+        :return: The PyCardano protocol parameters
+        """
+        cost_models: Dict = {}
+        if self.cost_models:
+            if isinstance(self.cost_models, CostModels):
+                cost_models = self.cost_models.to_dict()
+            elif isinstance(self.cost_models, dict):
+                cost_models = self.cost_models
+
+        return PyCardanoProtocolParameters(
+            min_fee_constant=self.min_fee_constant,
+            min_fee_coefficient=self.min_fee_coefficient,
+            max_block_size=self.max_block_size,
+            max_tx_size=self.max_tx_size,
+            max_block_header_size=self.max_block_header_size,
+            key_deposit=self.key_deposit,
+            pool_deposit=self.pool_deposit,
+            pool_influence=(
+                Fraction(self.pool_influence) if self.pool_influence else None
+            ),
+            monetary_expansion=(
+                Fraction(self.monetary_expansion) if self.monetary_expansion else None
+            ),
+            treasury_expansion=(
+                Fraction(self.treasury_expansion) if self.treasury_expansion else None
+            ),
+            decentralization_param=(
+                Fraction(self.decentralization_param)
+                if self.decentralization_param
+                else None
+            ),
+            extra_entropy=self.extra_entropy,
+            protocol_major_version=self.protocol_major_version,
+            protocol_minor_version=self.protocol_minor_version,
+            min_utxo=self.min_utxo,
+            min_pool_cost=self.min_pool_cost,
+            price_mem=Fraction(self.price_mem) if self.price_mem else None,
+            price_step=Fraction(self.price_step) if self.price_step else None,
+            max_tx_ex_mem=self.max_tx_ex_mem,
+            max_tx_ex_steps=self.max_tx_ex_steps,
+            max_block_ex_mem=self.max_block_ex_mem,
+            max_block_ex_steps=self.max_block_ex_steps,
+            max_val_size=self.max_val_size,
+            collateral_percent=self.collateral_percent,
+            max_collateral_inputs=self.max_collateral_inputs,
+            coins_per_utxo_word=self.coins_per_utxo_word,
+            coins_per_utxo_byte=self.coins_per_utxo_byte,
+            cost_models=cost_models,
+            maximum_reference_scripts_size=self.max_reference_scripts_size,
+            min_fee_reference_scripts=self.min_fee_ref_script_cost_per_byte,
+        )

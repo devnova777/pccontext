@@ -121,6 +121,8 @@ class BaseModel:
                     result[field_name] = new_list
                 elif isinstance(value, bytes):
                     result[field_name] = value.decode("utf-8")
+                elif isinstance(value, Fraction):
+                    result[field_name] = str(value)
                 elif isinstance(value, (Address, TransactionId)):
                     result[field_name] = str(value)
                 elif isinstance(value, UTxO):
