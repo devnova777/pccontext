@@ -946,7 +946,7 @@ def blockfrost_protocol_parameters():
         "drep_deposit": "500000000",
         "drep_activity": "20",
         "pvtpp_security_group": 0.51,
-        "min_fee_ref_script_cost_per_byte": 15,
+        "min_fee_reference_scripts": 15,
     }
 
 
@@ -1007,7 +1007,7 @@ def koios_protocol_parameters():
             "drep_deposit": 500000000,
             "drep_activity": 20,
             "pvtpp_security_group": 0.6,
-            "min_fee_ref_script_cost_per_byte": 15,
+            "min_fee_reference_scripts": 15,
         }
     ]
 
@@ -1669,6 +1669,14 @@ def ogmios_protocol_parameters():
         },
         "treasuryExpansion": "1/5",
         "version": {"major": 9, "minor": 0},
+    }
+
+
+@pytest.fixture
+def ogmios_protocol_parameters_response(ogmios_protocol_parameters):
+    return {
+        "method": "queryLedgerState/protocolParameters",
+        "result": ogmios_protocol_parameters,
     }
 
 
@@ -2401,7 +2409,7 @@ def fake_offline_transfer_address(
                 },
             }
         ],
-        "rewards": [],
+        "stake_address_info": [],
     }
 
 
@@ -2510,7 +2518,7 @@ def ogmios_era_summary():
 
 
 @pytest.fixture
-def ogmios_genesis_config():
+def ogmios_genesis_conway_config():
     return {
         "era": "conway",
         "constitution": {
@@ -2527,30 +2535,37 @@ def ogmios_genesis_config():
                 {
                     "id": "349e55f83e9af24813e6cb368df6a80d38951b2a334dfcdf26815558",
                     "mandate": {"epoch": 580},
+                    "from": "verificationKey",
                 },
                 {
                     "id": "84aebcfd3e00d0f87af918fc4b5e00135f407e379893df7e7d392c6a",
                     "mandate": {"epoch": 580},
+                    "from": "verificationKey",
                 },
                 {
                     "id": "b6012034ba0a7e4afbbf2c7a1432f8824aee5299a48e38e41a952686",
                     "mandate": {"epoch": 580},
+                    "from": "verificationKey",
                 },
                 {
                     "id": "ce8b37a72b178a37bbd3236daa7b2c158c9d3604e7aa667e6c6004b7",
                     "mandate": {"epoch": 580},
+                    "from": "verificationKey",
                 },
                 {
                     "id": "df0e83bde65416dade5b1f97e7f115cc1ff999550ad968850783fe50",
                     "mandate": {"epoch": 580},
+                    "from": "verificationKey",
                 },
                 {
                     "id": "e8165b3328027ee0d74b1f07298cb092fd99aa7697a1436f5997f625",
                     "mandate": {"epoch": 580},
+                    "from": "verificationKey",
                 },
                 {
                     "id": "f0dc2c00d92a45521267be2d5de1c485f6f9d14466d7e16062897cf7",
                     "mandate": {"epoch": 580},
+                    "from": "verificationKey",
                 },
             ],
             "quorum": "2/3",
@@ -2588,3 +2603,252 @@ def ogmios_genesis_config():
             "delegateRepresentativeMaxIdleTime": 20,
         },
     }
+
+
+@pytest.fixture
+def ogmios_genesis_shelley_config():
+    return {
+        "era": "shelley",
+        "startTime": "2017-09-23T21:44:51Z",
+        "networkMagic": 764824073,
+        "network": "mainnet",
+        "activeSlotsCoefficient": "1/20",
+        "securityParameter": 2160,
+        "epochLength": 432000,
+        "slotsPerKesPeriod": 129600,
+        "maxKesEvolutions": 62,
+        "slotLength": {"milliseconds": 1000},
+        "updateQuorum": 5,
+        "maxLovelaceSupply": 45000000000000000,
+        "initialParameters": {
+            "minFeeCoefficient": 44,
+            "minFeeConstant": {"ada": {"lovelace": 155381}},
+            "maxBlockBodySize": {"bytes": 65536},
+            "maxBlockHeaderSize": {"bytes": 1100},
+            "maxTransactionSize": {"bytes": 16384},
+            "stakeCredentialDeposit": {"ada": {"lovelace": 2000000}},
+            "stakePoolDeposit": {"ada": {"lovelace": 500000000}},
+            "stakePoolRetirementEpochBound": 18,
+            "desiredNumberOfStakePools": 150,
+            "stakePoolPledgeInfluence": "3/10",
+            "minStakePoolCost": {"ada": {"lovelace": 340000000}},
+            "monetaryExpansion": "3/1000",
+            "treasuryExpansion": "1/5",
+            "federatedBlockProductionRatio": "1/1",
+            "extraEntropy": "neutral",
+            "minUtxoDepositConstant": {"ada": {"lovelace": 1000000}},
+            "minUtxoDepositCoefficient": 0,
+            "version": {"major": 2, "minor": 0},
+        },
+        "initialDelegates": [
+            {
+                "issuer": {
+                    "id": "162f94554ac8c225383a2248c245659eda870eaa82d0ef25fc7dcd82"
+                },
+                "delegate": {
+                    "id": "4485708022839a7b9b8b639a939c85ec0ed6999b5b6dc651b03c43f6",
+                    "vrfVerificationKeyHash": "aba81e764b71006c515986bf7b37a72fbb5554f78e6775f08e384dbd572a4b32",
+                },
+            },
+            {
+                "issuer": {
+                    "id": "2075a095b3c844a29c24317a94a643ab8e22d54a3a3a72a420260af6"
+                },
+                "delegate": {
+                    "id": "6535db26347283990a252313a7903a45e3526ec25ddba381c071b25b",
+                    "vrfVerificationKeyHash": "fcaca997b8105bd860876348fc2c6e68b13607f9bbd23515cd2193b555d267af",
+                },
+            },
+            {
+                "issuer": {
+                    "id": "268cfc0b89e910ead22e0ade91493d8212f53f3e2164b2e4bef0819b"
+                },
+                "delegate": {
+                    "id": "1d4f2e1fda43070d71bb22a5522f86943c7c18aeb4fa47a362c27e23",
+                    "vrfVerificationKeyHash": "63ef48bc5355f3e7973100c371d6a095251c80ceb40559f4750aa7014a6fb6db",
+                },
+            },
+            {
+                "issuer": {
+                    "id": "60baee25cbc90047e83fd01e1e57dc0b06d3d0cb150d0ab40bbfead1"
+                },
+                "delegate": {
+                    "id": "7f72a1826ae3b279782ab2bc582d0d2958de65bd86b2c4f82d8ba956",
+                    "vrfVerificationKeyHash": "c0546d9aa5740afd569d3c2d9c412595cd60822bb6d9a4e8ce6c43d12bd0f674",
+                },
+            },
+            {
+                "issuer": {
+                    "id": "ad5463153dc3d24b9ff133e46136028bdc1edbb897f5a7cf1b37950c"
+                },
+                "delegate": {
+                    "id": "d9e5c76ad5ee778960804094a389f0b546b5c2b140a62f8ec43ea54d",
+                    "vrfVerificationKeyHash": "64fa87e8b29a5b7bfbd6795677e3e878c505bc4a3649485d366b50abadec92d7",
+                },
+            },
+            {
+                "issuer": {
+                    "id": "b9547b8a57656539a8d9bc42c008e38d9c8bd9c8adbb1e73ad529497"
+                },
+                "delegate": {
+                    "id": "855d6fc1e54274e331e34478eeac8d060b0b90c1f9e8a2b01167c048",
+                    "vrfVerificationKeyHash": "66d5167a1f426bd1adcc8bbf4b88c280d38c148d135cb41e3f5a39f948ad7fcc",
+                },
+            },
+            {
+                "issuer": {
+                    "id": "f7b341c14cd58fca4195a9b278cce1ef402dc0e06deb77e543cd1757"
+                },
+                "delegate": {
+                    "id": "69ae12f9e45c0c9122356c8e624b1fbbed6c22a2e3b4358cf0cb5011",
+                    "vrfVerificationKeyHash": "6394a632af51a32768a6f12dac3485d9c0712d0b54e3f389f355385762a478f2",
+                },
+            },
+        ],
+        "initialFunds": {},
+        "initialStakePools": {"stakePools": {}, "delegators": {}},
+    }
+
+
+@pytest.fixture
+def ogmios_genesis_conway_config_response(ogmios_genesis_conway_config):
+    return {
+        "method": "queryNetwork/genesisConfiguration",
+        "result": ogmios_genesis_conway_config,
+    }
+
+
+@pytest.fixture
+def ogmios_genesis_shelley_config_response(ogmios_genesis_shelley_config):
+    return {
+        "method": "queryNetwork/genesisConfiguration",
+        "result": ogmios_genesis_shelley_config,
+    }
+
+
+@pytest.fixture
+def fake_utxos():
+    return [
+        {
+            "transaction": {
+                "id": "3a42f652bd8dee788577e8c39b6217db3df659c33b10a2814c20fb66089ca167"
+            },
+            "index": 1,
+            "address": "addr_test1qraen6hr9zs5yae8cxnhlkh7rk2nfl7rnpg0xvmel3a0xf70v3kz6ee7mtq86x6gmrnw8j7kuf485902akkr7tlcx24qemz34a",
+            "value": {"ada": {"lovelace": 9858539}},
+        },
+        {
+            "transaction": {
+                "id": "c93d5dac64e3267abd2a91b9759e0d08395090d7bd89dfdfecd7ccc566661bcd"
+            },
+            "index": 1,
+            "address": "addr_test1qraen6hr9zs5yae8cxnhlkh7rk2nfl7rnpg0xvmel3a0xf70v3kz6ee7mtq86x6gmrnw8j7kuf485902akkr7tlcx24qemz34a",
+            "value": {"ada": {"lovelace": 9654079}},
+        },
+        {
+            "transaction": {
+                "id": "a29b70c94e4713825ae8f8771a09ba20ef0cc2cc4a1ea44b69673923cb745b77"
+            },
+            "index": 0,
+            "address": "addr_test1qraen6hr9zs5yae8cxnhlkh7rk2nfl7rnpg0xvmel3a0xf70v3kz6ee7mtq86x6gmrnw8j7kuf485902akkr7tlcx24qemz34a",
+            "value": {
+                "ada": {"lovelace": 7094260},
+                "0499adba96c80ed30dc5ac4bc7aa540835838ba219c0ea21c2f1e704": {
+                    "5547546f79313336": 1,
+                    "5547546f79323135": 1,
+                    "5547546f79333131": 1,
+                },
+                "04f57233694aec7d1d594a8dd207fdbd3b63a1246fb637c260ec9a85": {
+                    "4465727050617373313533": 1,
+                    "44657270506173733236": 1,
+                },
+                "0d4d94a639c1f29f516e20911c1feea0f6b22ff468dcaacc9d02c381": {
+                    "24444f55474850617373323839": 1,
+                    "24444f55474850617373393239": 1,
+                },
+                "1d5ff173a5897a76d75a56b22ab001cd3d73463b8a14e21b5cfc3d01": {
+                    "4c6f737443726f776e313032": 1
+                },
+                "1d8b26107c604d36e24963be3ba26f264245cae0e10c7fa15846efd2": {
+                    "466f7878656431343932": 1
+                },
+                "2341201e2508eaebd9acaecbaa7630350cee6ebf437c52cc42bab23e": {
+                    "477265656479476f626c696e7331393233": 1,
+                    "477265656479476f626c696e7332333939": 1,
+                    "477265656479476f626c696e7333323838": 1,
+                    "477265656479476f626c696e73333539": 1,
+                    "477265656479476f626c696e7334383536": 1,
+                    "477265656479476f626c696e7335343833": 1,
+                    "477265656479476f626c696e73373230": 1,
+                    "477265656479476f626c696e73393634": 1,
+                },
+                "2f8f1726932ca6b46efd9cc6ef4c426304d8dbae74d033a8bc4edef4": {
+                    "5269636b526f6c6c323431": 1,
+                    "5269636b526f6c6c333335": 1,
+                    "5269636b526f6c6c343230": 1,
+                },
+                "430647cb0eb21a64d250d1451c910eac5227666da00cd39eed1854ec": {
+                    "417065735249504e465453657269657331353936": 1,
+                    "417065735249504e465453657269657331363432": 1,
+                    "417065735249504e465453657269657333323531": 1,
+                    "417065735249504e4654536572696573393731": 1,
+                },
+                "53abd3b2432d7edfd7c59a11e577c872a898847e230e46c63c42938c": {
+                    "444f4c4c59": 87000
+                },
+                "65bdf33f8f7fd4debeb2ad659473749eb4eac177e06650bb75a8fe50": {
+                    "4d69746872546f6b656e": 1
+                },
+                "66fade242e56c2ce1b0a5beb20e905378f6e016bd24cf22bc617f2c2": {
+                    "6265706570617373313035": 1,
+                    "6265706570617373343635": 1,
+                },
+                "6e0dcc39f9cd4189953c170b763913529483a3709bd85c24b19bb234": {
+                    "4570737465696e4c697374313334": 1,
+                    "4570737465696e4c6973743831": 1,
+                },
+                "7003c12cda07c3ab9acc99ce68cf2a476dc7ea3ba8b35d85cdb096e5": {
+                    "506570654275726e50617373323837": 1
+                },
+                "72007ec54b04959442a5cc1b317a7389ae28ade9855deac87d6fec4d": {
+                    "41706573522e492e505469636b657450617373313132": 1,
+                    "41706573522e492e505469636b657450617373323933": 1,
+                },
+                "792f1fdb68bf6e6fd72aed1bed3f14c9593edbcb2f9bd64f0b55d619": {
+                    "4e657266436f696e50617373313130": 1,
+                    "4e657266436f696e50617373313330": 1,
+                    "4e657266436f696e50617373323139": 1,
+                },
+                "9a6de60bcd6dceef3e84b3d5e012f247236866fc7b4fedd1fd44b2cb": {
+                    "486f6d656c65737342756d73313034": 1,
+                    "486f6d656c65737342756d73333030": 1,
+                    "486f6d656c65737342756d73343135": 1,
+                    "486f6d656c65737342756d73343237": 1,
+                    "486f6d656c65737342756d733436": 1,
+                    "486f6d656c65737342756d73343635": 1,
+                },
+                "b72a07053117e192339ea4fe285f99f91eb80452a7d313bbb0872285": {
+                    "4164616e697461343831": 1,
+                    "4164616e697461353131": 1,
+                },
+                "d3f429f3702cbc4b0dd2616f88baf6cf5d55d922c4d50bdd4be115ae": {
+                    "427562756c6c7331313037": 1,
+                    "427562756c6c7331313634": 1,
+                    "427562756c6c7331323635": 1,
+                    "427562756c6c7331323931": 1,
+                    "427562756c6c7332303238": 1,
+                },
+                "d64a52a708f88252f4fb3b16014c81e605b4b5d0aa3480c02fcc2e2f": {
+                    "484f415244": 907046382
+                },
+                "e399578b7e763bc181ce8b45aabc65245d9be7c7e1edf68fbeb1d494": {
+                    "436861726c657350617373353234": 1
+                },
+            },
+        },
+    ]
+
+
+@pytest.fixture
+def ogmios_utxos_response(fake_utxos):
+    return {"method": "queryLedgerState/utxo", "result": fake_utxos}

@@ -102,7 +102,7 @@ def test_from_json_blockfrost(blockfrost_protocol_parameters):
         blockfrost_protocol_parameters["pvtpp_security_group"]
     )
     assert protocol_params.min_fee_ref_script_cost_per_byte == int(
-        blockfrost_protocol_parameters["min_fee_ref_script_cost_per_byte"]
+        blockfrost_protocol_parameters["min_fee_reference_scripts"]
     )
 
 
@@ -201,7 +201,7 @@ def test_from_json_koios(koios_protocol_parameters):
         koios_protocol_parameters[0]["pvtpp_security_group"]
     )
     assert protocol_params.min_fee_ref_script_cost_per_byte == int(
-        koios_protocol_parameters[0]["min_fee_ref_script_cost_per_byte"]
+        koios_protocol_parameters[0]["min_fee_reference_scripts"]
     )
 
 

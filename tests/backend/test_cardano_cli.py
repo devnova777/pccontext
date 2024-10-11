@@ -823,7 +823,7 @@ class TestCardanoCliChainContext:
     def test_protocol_param(self, chain_context):
         expected_protocol_params = ProtocolParameters.from_json(
             QUERY_PROTOCOL_PARAMETERS_RESULT
-        )
+        ).to_pycardano()
         assert chain_context.protocol_param == expected_protocol_params
 
     def test_genesis(self, chain_context, cli_get_shelley_genesis_json):
