@@ -2,7 +2,6 @@
 This module contains custom validators
 """
 
-import argparse
 import re
 
 __all__ = ["check_ada_handle_format"]
