@@ -11,8 +11,7 @@ from blockfrost.utils import Namespace
 from pycardano.address import Address
 from pycardano.backend.base import (
     ChainContext,
-    # GenesisParameters,
-    # ProtocolParameters,
+    ProtocolParameters as PyCardanoProtocolParameters,
 )
 from pycardano.exception import TransactionFailedException
 from pycardano.hash import SCRIPT_HASH_SIZE, DatumHash, ScriptHash
@@ -124,11 +123,11 @@ class BlockFrostChainContext(ChainContext):
         return self._genesis_param
 
     @property
-    def protocol_param(self) -> ProtocolParameters:
+    def protocol_param(self) -> PyCardanoProtocolParameters:
         if not self._protocol_param or self._check_epoch_and_update():
             params = self.api.epoch_latest_parameters(return_type="json")
             self._protocol_param = ProtocolParameters.from_json(params)
-        return self._protocol_param
+        return self._protocol_param.to_pycardano()
 
     def _get_script(
         self, script_hash: str
@@ -268,21 +267,22 @@ class BlockFrostChainContext(ChainContext):
                 )
             return return_val
 
-    def get_rewards_info(self, stake_address: str) -> List[StakeAddressInfo]:
-        """Get the rewards information for a stake address.
+    def stake_address_info(self, stake_address: str) -> List[StakeAddressInfo]:
+        """Get the stake address information.
 
         Args:
             stake_address (str): The stake address.
 
         Returns:
-            Dict[str, int]: The rewards information.
+            List[StakeAddressInfo]: The stake address information.
         """
         rewards_state = self.api.accounts(stake_address)
 
         return [
             StakeAddressInfo(
-                address=stake_address,
-                delegation=rewards_state["pool_id"],
-                reward_account_balance=rewards_state["withdrawable_amount"],
+                address=rewards_state.get("stake_address", None),
+                stake_delegation=rewards_state.get("pool_id", None),
+                reward_account_balance=rewards_state.get("withdrawable_amount", None),
+                delegate_representative=rewards_state.get("drep_id", None),
             )
         ]

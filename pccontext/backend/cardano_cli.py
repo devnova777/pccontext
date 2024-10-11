@@ -19,8 +19,7 @@ from docker.errors import APIError
 from pycardano.address import Address
 from pycardano.backend.base import (
     ChainContext,
-    # GenesisParameters,
-    # ProtocolParameters,
+    ProtocolParameters as PyCardanoProtocolParameters,
 )
 from pycardano.exception import (
     CardanoCliError,
@@ -43,7 +42,7 @@ from pycardano.transaction import (
 )
 from pycardano.types import JsonDict
 
-from pccontext.models import GenesisParameters, ProtocolParameters
+from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 
 __all__ = ["CardanoCliChainContext", "CardanoCliNetwork", "DockerConfig"]
 
@@ -245,11 +244,11 @@ class CardanoCliChainContext(ChainContext):
         return ProtocolParameters.from_json(result)
 
     @property
-    def protocol_param(self) -> ProtocolParameters:
+    def protocol_param(self) -> PyCardanoProtocolParameters:
         """Get current protocol parameters"""
         if not self._protocol_param or self._is_chain_tip_updated():
             self._protocol_param = self._fetch_protocol_param()
-        return self._protocol_param
+        return self._protocol_param.to_pycardano()
 
     @property
     def genesis_param(self) -> GenesisParameters:
@@ -437,3 +436,38 @@ class CardanoCliChainContext(ChainContext):
                 ) from err
 
         return txid
+
+    def stake_address_info(self, stake_address: str) -> List[StakeAddressInfo]:
+        """Get the stake address information.
+
+        Args:
+            stake_address (str): The stake address.
+
+        Returns:
+            List[StakeAddressInfo]: The stake address information.
+        """
+
+        result = self._run_command(
+            [
+                "query",
+                "stake-address-info",
+                "--address",
+                stake_address,
+                "--out-file",
+                "/dev/stdout",
+            ]
+            + self._network_args
+        )
+
+        info = json.loads(result)
+
+        return [
+            StakeAddressInfo(
+                address=stake_address,
+                delegation_deposit=rewards_state.get("delegationDeposit", None),
+                stake_delegation=rewards_state.get("stakeDelegation", None),
+                reward_account_balance=rewards_state.get("rewardAccountBalance", None),
+                vote_delegation=rewards_state.get("voteDelegation", None),
+            )
+            for rewards_state in info
+        ]

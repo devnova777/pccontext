@@ -22,6 +22,7 @@ from pycardano.transaction import (
     Value,
     AssetName,
 )
+from pccontext.models import StakeAddressInfo
 
 __all__ = ["KupoChainContextExtension"]
 
@@ -243,3 +244,14 @@ class KupoChainContextExtension(ChainContext):
             :class:`TransactionFailedException`: When fails to evaluate the transaction.
         """
         return self._wrapped_backend.evaluate_tx_cbor(cbor)
+
+    def stake_address_info(self, stake_address: str) -> List[StakeAddressInfo]:
+        """Get the stake address information.
+
+        Args:
+            stake_address (str): The stake address.
+
+        Returns:
+            List[StakeAddressInfo]: The stake address information.
+        """
+        raise NotImplementedError("This method is not implemented yet.")

@@ -24,6 +24,7 @@ from pycardano import (
     PlutusV1Script,
     PlutusV2Script,
     NativeScript,
+    ProtocolParameters as PyCardanoProtocolParameters,
 )
 
 __all__ = ["KoiosChainContext"]
@@ -32,7 +33,7 @@ from pycardano.types import JsonDict
 from requests import RequestException
 
 from pccontext.logging import logger
-from pccontext.models import GenesisParameters, ProtocolParameters
+from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 
 
 class KoiosChainContext(ChainContext):
@@ -122,11 +123,11 @@ class KoiosChainContext(ChainContext):
         return self._genesis_param
 
     @property
-    def protocol_param(self) -> ProtocolParameters:
+    def protocol_param(self) -> PyCardanoProtocolParameters:
         if not self._protocol_param or self._check_epoch_and_update():
             params = self.api.get_epoch_params(epoch_no=self.epoch)[0]
             self._protocol_param = ProtocolParameters.from_json(params)
-        return self._protocol_param
+        return self._protocol_param.to_pycardano()
 
     @staticmethod
     def _get_script(
@@ -263,3 +264,31 @@ class KoiosChainContext(ChainContext):
                 steps=res["budget"]["cpu"],
             )
         return result_dict
+
+    def stake_address_info(self, stake_address: str) -> List[StakeAddressInfo]:
+        """Get the stake address information.
+
+        Args:
+            stake_address (str): The stake address.
+
+        Returns:
+            List[StakeAddressInfo]: The stake address information.
+        """
+        info: List[StakeAddressInfo] = []
+        try:
+            results = self.api.get_account_info([stake_address])
+            info = [
+                StakeAddressInfo(
+                    address=result.get("stake_address", None),
+                    delegation_deposit=result.get("deposit", None),
+                    stake_delegation=result.get("delegated_pool", None),
+                    reward_account_balance=result.get("rewards_available", None),
+                    delegate_representative=result.get("delegated_drep", None),
+                )
+                for result in results
+            ]
+        except RequestException as e:
+            logger.error(
+                f"Failed to get Stake Address info for address {stake_address}. Error: {e}"
+            )
+        return info

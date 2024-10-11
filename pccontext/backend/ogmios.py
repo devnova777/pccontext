@@ -17,8 +17,7 @@ from ogmios.utils import get_current_era, GenesisParameters as OgmiosGenesisPara
 from pccontext.backend.kupo import KupoChainContextExtension
 from pycardano.backend.base import (
     ChainContext,
-    # ProtocolParameters,
-    # GenesisParameters,
+    ProtocolParameters as PyCardanoProtocolParameters,
 )
 from pycardano.network import Network
 from pycardano.transaction import (
@@ -32,18 +31,15 @@ from pycardano.transaction import (
     Address,
 )
 from pycardano.plutus import (
-    PLUTUS_V1_COST_MODEL,
-    PLUTUS_V2_COST_MODEL,
-    # PLUTUS_V3_COST_MODEL,
     PlutusV1Script,
     PlutusV2Script,
-    # PlutusV3Script,
+    PlutusV3Script,
     ExecutionUnits,
 )
 from pycardano.hash import ScriptHash, DatumHash
 from pycardano.serialization import RawCBOR
 
-from pccontext.models import GenesisParameters, ProtocolParameters
+from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 
 ALONZO_COINS_PER_UTXO_WORD = 34482
 DEFAULT_REFETCH_INTERVAL = 1000
@@ -138,10 +134,10 @@ class OgmiosChainContext(ChainContext):
         return int(x) / int(y)
 
     @property
-    def protocol_param(self) -> ProtocolParameters:
+    def protocol_param(self) -> PyCardanoProtocolParameters:
         if not self._protocol_param or self._is_chain_tip_updated():
             self._protocol_param = self._fetch_protocol_param()
-        return self._protocol_param
+        return self._protocol_param.to_pycardano()
 
     def _fetch_protocol_param(self) -> ProtocolParameters:
         with OgmiosClient(self.host, self.port, self.secure) as client:
@@ -272,8 +268,57 @@ class OgmiosChainContext(ChainContext):
     def genesis_param(self) -> GenesisParameters:
         if not self._genesis_param or self._is_chain_tip_updated():
             ogmios_genesis_param = self._fetch_genesis_param()
-            self._genesis_param = GenesisParameters.from_json(
-                ogmios_genesis_param.__dict__
+            self._genesis_param = GenesisParameters(
+                active_slots_coefficient=(
+                    ogmios_genesis_param.active_slots_coefficient
+                    if hasattr(ogmios_genesis_param, "active_slots_coefficient")
+                    else None
+                ),
+                update_quorum=(
+                    ogmios_genesis_param.update_quorum
+                    if hasattr(ogmios_genesis_param, "update_quorum")
+                    else None
+                ),
+                max_lovelace_supply=(
+                    ogmios_genesis_param.max_lovelace_supply
+                    if hasattr(ogmios_genesis_param, "max_lovelace_supply")
+                    else None
+                ),
+                network_magic=(
+                    ogmios_genesis_param.network_magic
+                    if hasattr(ogmios_genesis_param, "network_magic")
+                    else None
+                ),
+                epoch_length=(
+                    ogmios_genesis_param.epoch_length
+                    if hasattr(ogmios_genesis_param, "epoch_length")
+                    else None
+                ),
+                system_start=(
+                    ogmios_genesis_param.start_time
+                    if hasattr(ogmios_genesis_param, "start_time")
+                    else None
+                ),
+                slots_per_kes_period=(
+                    ogmios_genesis_param.slots_per_kes_period
+                    if hasattr(ogmios_genesis_param, "slots_per_kes_period")
+                    else None
+                ),
+                slot_length=(
+                    ogmios_genesis_param.slot_length
+                    if hasattr(ogmios_genesis_param, "slot_length")
+                    else None
+                ),
+                max_kes_evolutions=(
+                    ogmios_genesis_param.max_kes_evolutions
+                    if hasattr(ogmios_genesis_param, "max_kes_evolutions")
+                    else None
+                ),
+                security_param=(
+                    ogmios_genesis_param.security_parameter
+                    if hasattr(ogmios_genesis_param, "security_parameter")
+                    else None
+                ),
             )
 
             # Update the refetch interval if we haven't calculated it yet
@@ -350,6 +395,8 @@ class OgmiosChainContext(ChainContext):
                 script = PlutusV2Script(bytes.fromhex(script["cbor"]))
             elif script["language"] == "plutus:v1":
                 script = PlutusV1Script(bytes.fromhex(script["cbor"]))
+            elif script["language"] == "plutus:v3":
+                script = PlutusV3Script(bytes.fromhex(script["cbor"]))
             else:
                 raise ValueError("Unknown plutus script type")
         datum_hash = (
@@ -425,6 +472,30 @@ class OgmiosChainContext(ChainContext):
         if "plutus:v3" in ogmios_cost_models:
             cost_models["PlutusV3"] = ogmios_cost_models["plutus:v3"]
         return cost_models
+
+    def stake_address_info(self, stake_address: str) -> List[StakeAddressInfo]:
+        """Get the stake address information.
+
+        Args:
+            stake_address (str): The stake address.
+
+        Returns:
+            List[StakeAddressInfo]: The stake address information.
+        """
+        with OgmiosClient(self.host, self.port, self.secure) as client:
+            result, _ = client.query_reward_account_summaries.execute(
+                keys=[stake_address]
+            )
+
+            return [
+                StakeAddressInfo(
+                    address=stake_address,
+                    delegation_deposit=result["deposit"]["ada"]["lovelace"],
+                    stake_delegation=result["delegate"]["id"],
+                    reward_account_balance=result["rewards"]["ada"]["lovelace"],
+                )
+                for result in result
+            ]
 
 
 def KupoOgmiosV6ChainContext(
