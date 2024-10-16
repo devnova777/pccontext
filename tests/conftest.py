@@ -10,12 +10,12 @@ from ogmios.datatypes import EraSummary
 from pycardano.crypto.bech32 import CHARSET
 
 from pccontext import DATE_FORMAT_2, OgmiosChainContext
-from pccontext.enums import Era, TransactionType
+from pccontext.enums import Era, Network, TransactionType
 from pccontext.models.genesis_parameters_model import GenesisParameters
 from pccontext.utils.file_utils import base64_encoded_file
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def fake_transaction_id():
     fake = Faker()
     return fake.hexify(
@@ -23,7 +23,7 @@ def fake_transaction_id():
     )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def fake_stake_address():
     fake = Faker()
     return fake.lexify(
@@ -32,12 +32,12 @@ def fake_stake_address():
     )
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def fake_payment_address():
     return "addr1q8m9x2zsux7va6w892g38tvchnzahvcd9tykqf3ygnmwta8k2v59pcduem5uw253zwke30x9mwes62kfvqnzg38kuh6q966kg7"
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def fake_base16_address():
     fake = Faker()
     return fake.hexify(
@@ -1680,7 +1680,7 @@ def ogmios_protocol_parameters_response(ogmios_protocol_parameters):
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def cli_protocol_parameters():
     return {
         "collateralPercentage": 150,
@@ -2346,7 +2346,7 @@ def cli_protocol_parameters():
     }
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def fake_offline_transfer_general():
     fake = Faker()
     return {
@@ -2356,16 +2356,17 @@ def fake_offline_transfer_general():
     }
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def fake_offline_transfer_protocol(cli_protocol_parameters):
     fake = Faker()
     return {
         "parameters": cli_protocol_parameters,
         "era": f"{fake.enum(Era).name}",
+        "network": f"{fake.enum(Network).name}",
     }
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def fake_offline_transfer_history():
     fake = Faker()
     return {
@@ -2374,7 +2375,7 @@ def fake_offline_transfer_history():
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def fake_offline_transfer_address(
     fake_payment_address, fake_transaction_id, fake_base16_address
 ):
@@ -2413,18 +2414,18 @@ def fake_offline_transfer_address(
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def fake_offline_transfer_file(config_file):
     fake = Faker()
     return {
         "name": fake.word(),
         "date": fake.future_date().strftime(DATE_FORMAT_2),
         "size": fake.pyint(min_value=1_000, max_value=1_000_000),
-        "base64": base64_encoded_file(config_file),
+        "base64": base64_encoded_file(config_file).decode("utf-8"),
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def test_tx_json():
     fake = Faker()
     cbor = (
@@ -2451,7 +2452,7 @@ def test_tx_json():
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def fake_offline_transfer_transaction(
     fake_stake_address, fake_payment_address, test_tx_json
 ):
@@ -2468,7 +2469,7 @@ def fake_offline_transfer_transaction(
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def fake_offline_transfer(
     fake_offline_transfer_general,
     fake_offline_transfer_protocol,
@@ -2485,6 +2486,21 @@ def fake_offline_transfer(
         "transactions": [fake_offline_transfer_transaction],
         "addresses": [fake_offline_transfer_address],
     }
+
+
+@pytest.fixture(scope="session")
+def offline_transfer_file(fake_offline_transfer):
+    offline_transfer_file_path = Path.cwd() / "offline-transfer.json"
+
+    with open(offline_transfer_file_path, "w", encoding="utf-8") as file:
+        file.write(json.dumps(fake_offline_transfer, indent=4))
+
+    yield offline_transfer_file_path
+
+    try:
+        offline_transfer_file_path.unlink()
+    except FileNotFoundError:
+        pass
 
 
 @pytest.fixture
@@ -2852,3 +2868,14 @@ def fake_utxos():
 @pytest.fixture
 def ogmios_utxos_response(fake_utxos):
     return {"method": "queryLedgerState/utxo", "result": fake_utxos}
+
+
+@pytest.fixture
+def ogmios_network_tip_response(fake_utxos):
+    return {
+        "method": "queryNetwork/tip",
+        "result": {
+            "slot": 137467329,
+            "id": "8231935154b93fc54c6f7d3f91a50ecd40860a039a7166bae68a5ed5ba719d49",
+        },
+    }

@@ -6,6 +6,7 @@ from ogmios.statequery import (
     QueryProtocolParameters,
     QueryGenesisConfiguration,
     QueryUtxo,
+    QueryNetworkTip,
 )
 from pycardano import TransactionOutput, Address
 from pycardano.transaction import MultiAsset, TransactionInput, Value
@@ -152,11 +153,21 @@ class TestOgmiosChainContext:
             == genesis_param
         )
 
-    def test_utxo(self, ogmios_chain_context, ogmios_utxos_response):
+    def test_utxo(
+        self, ogmios_chain_context, ogmios_network_tip_response, ogmios_utxos_response
+    ):
         with patch(
             "ogmios.statequery.QueryUtxo.execute",
             side_effect=(
                 QueryUtxo._parse_QueryUtxo_response(ogmios_utxos_response),
+                None,
+            ),
+        ), patch("ogmios.client.connect"), patch(
+            "ogmios.statequery.QueryNetworkTip.execute",
+            side_effect=(
+                QueryNetworkTip._parse_QueryNetworkTip_response(
+                    ogmios_network_tip_response
+                ),
                 None,
             ),
         ):
@@ -291,11 +302,21 @@ class TestOgmiosChainContext:
             ),
         )
 
-    def test_utxo_by_tx_id(self, ogmios_chain_context, ogmios_utxos_response):
+    def test_utxo_by_tx_id(
+        self, ogmios_chain_context, ogmios_network_tip_response, ogmios_utxos_response
+    ):
         with patch(
             "ogmios.statequery.QueryUtxo.execute",
             side_effect=(
                 QueryUtxo._parse_QueryUtxo_response(ogmios_utxos_response),
+                None,
+            ),
+        ), patch("ogmios.client.connect"), patch(
+            "ogmios.statequery.QueryNetworkTip.execute",
+            side_effect=(
+                QueryNetworkTip._parse_QueryNetworkTip_response(
+                    ogmios_network_tip_response
+                ),
                 None,
             ),
         ):

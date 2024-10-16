@@ -1,5 +1,6 @@
 import json
 
+from pccontext.enums import Era, Network
 from pccontext.models import (
     OfflineTransferGeneral,
     OfflineTransferProtocol,
@@ -47,7 +48,12 @@ def test_offline_transfer_protocol(fake_offline_transfer_protocol):
     assert offline_transfer_protocol.parameters == ProtocolParameters.from_json(
         fake_offline_transfer_protocol["parameters"]
     )
-    assert offline_transfer_protocol.era == fake_offline_transfer_protocol["era"]
+    assert offline_transfer_protocol.era == Era(
+        fake_offline_transfer_protocol["era"].lower()
+    )
+    assert offline_transfer_protocol.network == Network(
+        fake_offline_transfer_protocol["network"].lower()
+    )
 
 
 def test_offline_transfer_history(fake_offline_transfer_history):
@@ -145,7 +151,12 @@ def test_offline_transfer(fake_offline_transfer):
         == fake_offline_transfer["general"]["online_node_version"]
     )
 
-    assert offline_transfer.protocol.era == fake_offline_transfer["protocol"]["era"]
+    assert offline_transfer.protocol.era == Era(
+        fake_offline_transfer["protocol"]["era"].lower()
+    )
+    assert offline_transfer.protocol.network == Network(
+        fake_offline_transfer["protocol"]["network"].lower()
+    )
     assert offline_transfer.protocol.parameters == ProtocolParameters.from_json(
         fake_offline_transfer["protocol"]["parameters"]
     )
