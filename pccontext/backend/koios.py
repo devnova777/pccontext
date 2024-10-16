@@ -23,6 +23,7 @@ from pycardano import (
     ExecutionUnits,
     PlutusV1Script,
     PlutusV2Script,
+    PlutusV3Script,
     NativeScript,
     ProtocolParameters as PyCardanoProtocolParameters,
 )
@@ -146,8 +147,8 @@ class KoiosChainContext(ChainContext):
             return PlutusV1Script(cbor2.loads(bytes.fromhex(reference_script["bytes"])))
         elif script_type == "plutusV2":
             return PlutusV2Script(cbor2.loads(bytes.fromhex(reference_script["bytes"])))
-        # elif script_type == "plutusV3":
-        #     return PlutusV3Script(cbor2.loads(bytes.fromhex(reference_script["bytes"])))
+        elif script_type == "plutusV3":
+            return PlutusV3Script(cbor2.loads(bytes.fromhex(reference_script["bytes"])))
         else:
             return NativeScript.from_dict(reference_script["value"])
 
