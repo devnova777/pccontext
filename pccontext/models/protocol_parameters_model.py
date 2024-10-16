@@ -256,7 +256,14 @@ class ProtocolParameters(BaseModel):
         Union[CostModels, Dict[str, Union[Dict[Union[str, int], int], list]]]
     ] = field(
         default=None,
-        metadata={"aliases": ["cost_models", "costModels", "plutusCostModels"]},
+        metadata={
+            "aliases": [
+                "cost_models",
+                "costModels",
+                "plutusCostModels",
+                "cost_models_raw",
+            ]
+        },
     )
     d_rep_activity: Optional[int] = field(
         default=None,
@@ -569,6 +576,7 @@ class ProtocolParameters(BaseModel):
             "aliases": [
                 "pvt_pp_security_group",
                 "pvtpp_security_group",
+                "pvt_p_p_security_group",
                 "pvtppSecurityGroup",
             ]
         },
@@ -1074,7 +1082,7 @@ class ProtocolParameters(BaseModel):
             collateral_percent=self.collateral_percent,
             max_collateral_inputs=self.max_collateral_inputs,
             coins_per_utxo_word=self.coins_per_utxo_word,
-            coins_per_utxo_byte=self.coins_per_utxo_byte,
+            coins_per_utxo_byte=self.coins_per_utxo_byte or self.utxo_cost_per_byte,
             cost_models=cost_models,
             maximum_reference_scripts_size=self.max_reference_scripts_size,
             min_fee_reference_scripts=self.min_fee_ref_script_cost_per_byte,
