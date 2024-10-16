@@ -8,9 +8,10 @@ from pycardano import (
     UTxO,
     Transaction,
     ProtocolParameters as PyCardanoProtocolParameters,
+    Network,
 )
 
-from pccontext.enums import HistoryType, TransactionType
+from pccontext.enums import Era, HistoryType, TransactionType
 from pccontext.exceptions import OfflineTransferFileError
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 from pccontext.models import (
@@ -124,11 +125,22 @@ class OfflineTransferFileContext(ChainContext):
         return None
 
     @property
-    def era(self) -> Optional[str]:
+    def era(self) -> Optional[Era]:
         """Current Cardano era"""
         if self._offline_transfer.protocol:
             return self._offline_transfer.protocol.era
         return None
+
+    @property
+    def network(self) -> Optional[Network]:
+        """Current Cardano network"""
+        if self._offline_transfer.protocol:
+            if (
+                self._offline_transfer.protocol.network
+                and self._offline_transfer.protocol.network.value == "mainnet"
+            ):
+                return Network.MAINNET
+        return Network.TESTNET
 
     def _utxos(self, address: str) -> Optional[List[UTxO]]:
         """

@@ -9,7 +9,7 @@ from typing import Type, TypeVar, Union, Dict, List, Any
 from pycardano import Address, TransactionId, UTxO
 
 from pccontext.utils import DATE_FORMAT_2
-from pccontext.enums import AddressType
+from pccontext.enums import AddressType, Era, Network
 
 T = TypeVar("T", bound="BaseModel")
 
@@ -69,6 +69,10 @@ class BaseModel:
                         v = float(v) if "/" not in v else float(Fraction(v))
                     elif field_type == "Optional[int]":
                         v = int(v)
+                    elif field_type == "Optional[Era]":
+                        v = Era(v.lower())
+                    elif field_type == "Optional[Network]":
+                        v = Network(v.lower())
                 elif isinstance(v, dict):
                     init_args[field_name] = cls.property_from_dict(
                         v, k, field_name, init_args
@@ -127,7 +131,7 @@ class BaseModel:
                     result[field_name] = str(value)
                 elif isinstance(value, UTxO):
                     result[field_name] = value.to_shallow_primitive()
-                elif isinstance(value, AddressType):
+                elif isinstance(value, (AddressType, Era, Network)):
                     result[field_name] = value.value
                 elif isinstance(value, Path):
                     result[field_name] = value.as_posix()

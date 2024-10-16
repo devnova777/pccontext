@@ -5,7 +5,7 @@ from datetime import timezone, datetime
 from pathlib import Path
 from typing import Optional, List, Type, Dict
 
-from pccontext.enums import TransactionType, HistoryType
+from pccontext.enums import Era, TransactionType, HistoryType, Network
 from pccontext.models import BaseModel
 from pccontext.utils import DATE_FORMAT_2
 from pccontext.utils import (
@@ -24,6 +24,7 @@ __all__ = [
     "OfflineTransferFile",
     "OfflineTransferTransaction",
     "OfflineTransfer",
+    "TransactionJSON",
 ]
 
 
@@ -54,7 +55,8 @@ class OfflineTransferProtocol(BaseModel):
     """
 
     parameters: Optional[ProtocolParameters] = None
-    era: Optional[str] = None
+    era: Optional[Era] = None
+    network: Optional[Network] = None
 
     @classmethod
     def property_from_dict(
@@ -123,6 +125,7 @@ class OfflineTransferTransaction(BaseModel):
     date: Optional[str] = field(
         default=datetime.now(timezone.utc).strftime(DATE_FORMAT_2)
     )
+    era: Optional[Era] = None
     stake_address: Optional[str] = field(
         default=None,
         metadata={"aliases": ["stake_address", "stakeAddress"]},
