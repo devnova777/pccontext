@@ -7,11 +7,17 @@ from pycardano.address import Address
 from pycardano.backend.base import (
     ChainContext,
     GenesisParameters,
+    ProtocolParameters as PyCardanoProtocolParameters,
 )
 from pycardano.backend.blockfrost import _try_fix_script
 from pycardano.hash import DatumHash, ScriptHash
 from pycardano.network import Network
-from pycardano.plutus import ExecutionUnits, PlutusV1Script, PlutusV2Script
+from pycardano.plutus import (
+    ExecutionUnits,
+    PlutusV1Script,
+    PlutusV2Script,
+    PlutusV3Script,
+)
 from pycardano.serialization import RawCBOR
 from pycardano.transaction import (
     Asset,
@@ -69,8 +75,12 @@ class KupoChainContextExtension(ChainContext):
     @property
     def genesis_param(self) -> GenesisParameters:
         """Get chain genesis parameters"""
-
         return self._wrapped_backend.genesis_param
+
+    @property
+    def protocol_param(self) -> PyCardanoProtocolParameters:
+        """Get chain protocol parameters"""
+        return self._wrapped_backend.protocol_param
 
     @property
     def network(self) -> Network:
@@ -171,7 +181,10 @@ class KupoChainContextExtension(ChainContext):
                 if script_hash:
                     kupo_script_url = self._kupo_url + "/scripts/" + script_hash
                     script = requests.get(kupo_script_url).json()
-                    if script["language"] == "plutus:v2":
+                    if script["language"] == "plutus:v3":
+                        script = PlutusV3Script(bytes.fromhex(script["script"]))
+                        script = _try_fix_script(script_hash, script)
+                    elif script["language"] == "plutus:v2":
                         script = PlutusV2Script(bytes.fromhex(script["script"]))
                         script = _try_fix_script(script_hash, script)
                     elif script["language"] == "plutus:v1":
@@ -254,4 +267,4 @@ class KupoChainContextExtension(ChainContext):
         Returns:
             List[StakeAddressInfo]: The stake address information.
         """
-        raise NotImplementedError("This method is not implemented yet.")
+        raise self._wrapped_backend.stake_address_info(stake_address)
