@@ -321,19 +321,37 @@ class ProtocolParameters(BaseModel):
     )
     dvt_p_p_network_group: Optional[float] = field(
         default=None,
-        metadata={"aliases": ["dvt_p_p_network_group", "dvtPPNetworkGroup"]},
+        metadata={
+            "aliases": [
+                "dvt_p_p_network_group",
+                "dvtPPNetworkGroup",
+                "dvt_ppnetwork_group",
+            ]
+        },
     )
     dvt_p_p_economic_group: Optional[float] = field(
         default=None,
-        metadata={"aliases": ["dvt_p_p_economic_group", "dvtPPEconomicGroup"]},
+        metadata={
+            "aliases": [
+                "dvt_p_p_economic_group",
+                "dvtPPEconomicGroup",
+                "dvt_ppeconomic_group",
+            ]
+        },
     )
     dvt_p_p_technical_group: Optional[float] = field(
         default=None,
-        metadata={"aliases": ["dvt_p_p_technical_group", "dvtPPTechnicalGroup"]},
+        metadata={
+            "aliases": [
+                "dvt_p_p_technical_group",
+                "dvtPPTechnicalGroup",
+                "dvt_pptechnical_group",
+            ]
+        },
     )
     dvt_p_p_gov_group: Optional[float] = field(
         default=None,
-        metadata={"aliases": ["dvt_p_p_gov_group", "dvtPPGovGroup"]},
+        metadata={"aliases": ["dvt_p_p_gov_group", "dvtPPGovGroup", "dvt_ppgov_group"]},
     )
     dvt_treasury_withdrawal: Optional[float] = field(
         default=None,

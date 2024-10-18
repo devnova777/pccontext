@@ -28,6 +28,7 @@ requests = "^2.32.3"
 cachetools = "^5.5.0"
 ogmios = "^1.2.1"
 pycardano =  "^0.12.0"
+yaci-client = "^1.0"
 
 
 [tool.poetry.group.dev.dependencies]

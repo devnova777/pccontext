@@ -133,14 +133,14 @@ class KoiosChainContext(ChainContext):
     @staticmethod
     def _get_script(
         reference_script: dict,
-    ) -> Union[PlutusV1Script, PlutusV2Script, NativeScript]:
+    ) -> Union[PlutusV1Script, PlutusV2Script, PlutusV3Script, NativeScript]:
         """
         Get a script object from a reference script dictionary.
         Args:
             reference_script:
 
         Returns:
-            Union[PlutusV1Script, PlutusV2Script, NativeScript]
+            Union[PlutusV1Script, PlutusV2Script, PlutusV3Script, NativeScript]
         """
         script_type = reference_script["type"]
         if script_type == "plutusV1":

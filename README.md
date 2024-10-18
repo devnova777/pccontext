@@ -1,6 +1,6 @@
 ## PyCardano Chain Contexts
 
-This library is contains the various Chain Contexts to use with the PyCardano library.
+This library contains the various Chain Contexts to use with the PyCardano library.
 
 ### Basic Usage
 
@@ -46,9 +46,7 @@ chain_context = KoiosChainContext(api_key="api_key")
 ```python
 from pccontext import OgmiosChainContext
 
-
 chain_context = OgmiosChainContext(host="localhost", port=1337)
-
 
 ```
 
@@ -60,7 +58,6 @@ from pccontext import OgmiosChainContext, KupoChainContextExtension
 ogmios_chain_context = OgmiosChainContext(host="localhost", port=1337)
 chain_context = KupoChainContextExtension(wrapped_backend=ogmios_chain_context)
 
-
 ```
 
 #### Offline Transfer File
@@ -69,7 +66,15 @@ chain_context = KupoChainContextExtension(wrapped_backend=ogmios_chain_context)
 from pathlib import Path
 from pccontext import OfflineTransferFileContext
 
-
 chain_context = OfflineTransferFileContext(offline_transfer_file=Path("offline-transfer.json"))
+
+```
+
+#### Yaci Devkit
+
+```python
+from pccontext import YaciDevkitChainContext
+
+chain_context = YaciDevkitChainContext(api_url="http://localhost:8080")
 
 ```

@@ -20,7 +20,7 @@ class TestOgmiosChainContext:
         self, ogmios_chain_context, ogmios_protocol_parameters_response
     ):
         with patch(
-            "ogmios.statequery.QueryProtocolParameters.execute",
+            "ogmios.statequery.QueryProtocolParameters.QueryProtocolParameters.execute",
             return_value=QueryProtocolParameters._parse_QueryProtocolParameters_response(
                 ogmios_protocol_parameters_response
             ),
@@ -122,12 +122,12 @@ class TestOgmiosChainContext:
         ogmios_genesis_shelley_config_response,
     ):
         with patch(
-            "ogmios.statequery.QueryGenesisConfiguration.execute",
+            "ogmios.statequery.QueryGenesisConfiguration.QueryGenesisConfiguration.execute",
             return_value=QueryGenesisConfiguration._parse_QueryGenesisConfiguration_response(
                 ogmios_genesis_shelley_config_response
             ),
         ), patch(
-            "ogmios.statequery.QueryEraSummaries.execute",
+            "ogmios.statequery.QueryEraSummaries.QueryEraSummaries.execute",
             return_value=(
                 ogmios_era_summary,
                 None,
@@ -157,13 +157,13 @@ class TestOgmiosChainContext:
         self, ogmios_chain_context, ogmios_network_tip_response, ogmios_utxos_response
     ):
         with patch(
-            "ogmios.statequery.QueryUtxo.execute",
+            "ogmios.statequery.QueryUtxo.QueryUtxo.execute",
             side_effect=(
                 QueryUtxo._parse_QueryUtxo_response(ogmios_utxos_response),
                 None,
             ),
         ), patch("ogmios.client.connect"), patch(
-            "ogmios.statequery.QueryNetworkTip.execute",
+            "ogmios.statequery.QueryNetworkTip.QueryNetworkTip.execute",
             side_effect=(
                 QueryNetworkTip._parse_QueryNetworkTip_response(
                     ogmios_network_tip_response
@@ -306,13 +306,13 @@ class TestOgmiosChainContext:
         self, ogmios_chain_context, ogmios_network_tip_response, ogmios_utxos_response
     ):
         with patch(
-            "ogmios.statequery.QueryUtxo.execute",
+            "ogmios.statequery.QueryUtxo.QueryUtxo.execute",
             side_effect=(
                 QueryUtxo._parse_QueryUtxo_response(ogmios_utxos_response),
                 None,
             ),
         ), patch("ogmios.client.connect"), patch(
-            "ogmios.statequery.QueryNetworkTip.execute",
+            "ogmios.statequery.QueryNetworkTip.QueryNetworkTip.execute",
             side_effect=(
                 QueryNetworkTip._parse_QueryNetworkTip_response(
                     ogmios_network_tip_response
