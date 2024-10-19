@@ -1,5 +1,4 @@
-import json
-from typing import List, Optional, Union, Dict
+from typing import List, Optional, Union, Dict, Any, cast
 
 import cbor2
 from pycardano import TransactionFailedException
@@ -35,15 +34,26 @@ from yaci_client.api.local_epoch_service import (
     get_latest_protocol_params,
     get_latest_epoch,
 )
+from yaci_client.api.script_service import (
+    get_script_by_hash,
+    get_script_cbor_by_hash,
+    get_script_json_by_hash,
+)
 from yaci_client.api.tx_submission_service import submit_tx_1
 from yaci_client.api.utilities import evaluate_tx
 from yaci_client.errors import UnexpectedStatus
-from yaci_client.models import EpochNo, ProtocolParamsDto, StakeAccountInfo
-from yaci_client.types import Response
+from yaci_client.models import (
+    EpochNo,
+    ProtocolParamsDto,
+    StakeAccountInfo,
+    ScriptDto,
+    ScriptCborDto,
+    ScriptJsonDto,
+)
 
-from pccontext.models import StakeAddressInfo
 from pccontext.logging import logger
 from pccontext.models import GenesisParameters, ProtocolParameters
+from pccontext.models import StakeAddressInfo
 
 __all__ = ["YaciDevkitChainContext"]
 
@@ -103,25 +113,37 @@ class YaciDevkitChainContext(ChainContext):
         return self._protocol_param.to_pycardano()
 
     def _get_script(
-        self, reference_script: dict
+        self, script_hash: str
     ) -> Union[PlutusV1Script, PlutusV2Script, PlutusV3Script, NativeScript]:
-        """
-        Get a script object from a reference script dictionary.
-        Args:
-            reference_script:
+        with self.api as client:
+            script: Optional[ScriptDto] = get_script_by_hash.sync(
+                script_hash=script_hash, client=client
+            )
 
-        Returns:
-            Union[PlutusV1Script, PlutusV2Script, PlutusV3Script, NativeScript]
-        """
-        script_type = reference_script["type"]
+        script_type = script.type if script else None
+
+        def get_plutus_cbor(script_hash: str) -> str:
+            with self.api as client:
+                script_cbor: Optional[ScriptCborDto] = get_script_cbor_by_hash.sync(
+                    script_hash=script_hash, client=client
+                )
+            return str(script_cbor.cbor) if script_cbor else ""
+
         if script_type == "plutusV1":
-            return PlutusV1Script(cbor2.loads(bytes.fromhex(reference_script["bytes"])))
+            v1script = PlutusV1Script(bytes.fromhex(get_plutus_cbor(script_hash)))
+            return _try_fix_script(script_hash, v1script)
         elif script_type == "plutusV2":
-            return PlutusV2Script(cbor2.loads(bytes.fromhex(reference_script["bytes"])))
+            v2script = PlutusV2Script(bytes.fromhex(get_plutus_cbor(script_hash)))
+            return _try_fix_script(script_hash, v2script)
         elif script_type == "plutusV3":
-            return PlutusV3Script(cbor2.loads(bytes.fromhex(reference_script["bytes"])))
+            v3script = PlutusV3Script(bytes.fromhex(get_plutus_cbor(script_hash)))
+            return _try_fix_script(script_hash, v3script)
         else:
-            return NativeScript.from_dict(reference_script["value"])
+            with self.api as client:
+                script_json: Optional[ScriptJsonDto] = get_script_json_by_hash.sync(
+                    script_hash=script_hash, client=client
+                )
+            return NativeScript.from_dict(script_json.json if script_json else {})
 
     def _utxos(self, address: str) -> List[UTxO]:
         """Get all UTxOs associated with an address with Kupo.
@@ -174,7 +196,7 @@ class YaciDevkitChainContext(ChainContext):
             datum = None
 
             if hasattr(result, "inline_datum") and result.inline_datum is not None:
-                datum = RawCBOR(bytes.fromhex(result.inline_datum))
+                datum = RawCBOR(bytes.fromhex(str(result.inline_datum)))
 
             script = None
 
@@ -243,9 +265,11 @@ class YaciDevkitChainContext(ChainContext):
                 f"Failed to evaluate transaction. Error code: {e.status_code}. Error message: {e.content}"
             ) from e
 
-        result = response["result"] if response else None
+        result: Optional[Dict[str, Any]] = (
+            cast(Dict[str, Any], response["result"]) if response else None
+        )
 
-        if not result["EvaluationResult"]:
+        if not result or not result.get("EvaluationResult"):
             raise TransactionFailedException(result)
         else:
             return {
