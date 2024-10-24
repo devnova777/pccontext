@@ -4,12 +4,12 @@ from dataclasses import dataclass
 from datetime import datetime
 from fractions import Fraction
 from pathlib import Path
-from typing import Type, TypeVar, Union, Dict, List, Any
+from typing import Any, Dict, List, Type, TypeVar, Union
 
 from pycardano import Address, TransactionId, UTxO
 
-from pccontext.utils import DATE_FORMAT_2
 from pccontext.enums import AddressType, Era, Network
+from pccontext.utils import DATE_FORMAT_2
 
 T = TypeVar("T", bound="BaseModel")
 

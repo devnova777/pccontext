@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Optional, Dict, Any, Union
+from typing import Any, Dict, Optional, Union
 
 from pccontext.models import BaseModel
 

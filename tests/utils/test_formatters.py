@@ -1,5 +1,7 @@
-import pytest
 from datetime import datetime
+
+import pytest
+
 from pccontext.utils.formatters import format_date
 
 DATE_FORMAT_2 = "%Y-%m-%d %H:%M:%S"

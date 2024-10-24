@@ -1,21 +1,19 @@
-from typing import List, Optional, Union, Dict, Any, cast
+from typing import Any, Dict, List, Optional, Union, cast
 
 import cbor2
 from pycardano import TransactionFailedException
 from pycardano.address import Address
-from pycardano.backend.base import (
-    ChainContext,
-    ProtocolParameters as PyCardanoProtocolParameters,
-)
+from pycardano.backend.base import ChainContext
+from pycardano.backend.base import ProtocolParameters as PyCardanoProtocolParameters
 from pycardano.hash import SCRIPT_HASH_SIZE, DatumHash, ScriptHash
 from pycardano.nativescript import NativeScript
 from pycardano.network import Network
 from pycardano.plutus import (
+    ExecutionUnits,
     PlutusV1Script,
     PlutusV2Script,
     PlutusV3Script,
     script_hash,
-    ExecutionUnits,
 )
 from pycardano.serialization import RawCBOR
 from pycardano.transaction import (
@@ -31,8 +29,8 @@ from yaci_client import Client
 from yaci_client.api.account_api import get_stake_account_details
 from yaci_client.api.address_service import get_utxos_1
 from yaci_client.api.local_epoch_service import (
-    get_latest_protocol_params,
     get_latest_epoch,
+    get_latest_protocol_params,
 )
 from yaci_client.api.script_service import (
     get_script_by_hash,
@@ -45,15 +43,14 @@ from yaci_client.errors import UnexpectedStatus
 from yaci_client.models import (
     EpochNo,
     ProtocolParamsDto,
-    StakeAccountInfo,
-    ScriptDto,
     ScriptCborDto,
+    ScriptDto,
     ScriptJsonDto,
+    StakeAccountInfo,
 )
 
 from pccontext.logging import logger
-from pccontext.models import GenesisParameters, ProtocolParameters
-from pccontext.models import StakeAddressInfo
+from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 
 __all__ = ["YaciDevkitChainContext"]
 

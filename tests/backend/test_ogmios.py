@@ -3,12 +3,12 @@ from fractions import Fraction
 from unittest.mock import patch
 
 from ogmios.statequery import (
-    QueryProtocolParameters,
     QueryGenesisConfiguration,
-    QueryUtxo,
     QueryNetworkTip,
+    QueryProtocolParameters,
+    QueryUtxo,
 )
-from pycardano import TransactionOutput, Address
+from pycardano import Address, TransactionOutput
 from pycardano.transaction import MultiAsset, TransactionInput, Value
 
 from pccontext.backend.ogmios import ALONZO_COINS_PER_UTXO_WORD

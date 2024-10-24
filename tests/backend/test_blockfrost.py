@@ -1,9 +1,9 @@
 from unittest.mock import MagicMock, patch
 
 from blockfrost import ApiUrls
+from pycardano.network import Network
 
 from pccontext.backend.blockfrost import BlockFrostChainContext
-from pycardano.network import Network
 
 
 @patch("pccontext.backend.blockfrost.BlockFrostApi")

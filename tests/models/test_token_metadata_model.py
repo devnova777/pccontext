@@ -3,8 +3,8 @@ from pydantic import HttpUrl
 
 from pccontext.models.token_metadata_model import (
     AnnotatedSignature,
-    TokenMetadataProperty,
     TokenMetadata,
+    TokenMetadataProperty,
 )
 
 

@@ -1,44 +1,40 @@
 import time
 from fractions import Fraction
-from typing import Optional, Union, Dict, List
+from typing import Dict, List, Optional, Union
+
 from cachetools import Cache, LRUCache, TTLCache, func
-
 from ogmios.client import Client as OgmiosClient
-from ogmios.datatypes import (
-    ProtocolParameters as OgmiosProtocolParameters,
-    Era as OgmiosEra,
-    Tip as OgmiosTip,
-    Utxo as OgmiosUtxo,
-    Address as OgmiosAddress,
-    TxOutputReference as OgmiosTxOutputReference,
-)
-from ogmios.utils import get_current_era, GenesisParameters as OgmiosGenesisParameters
-
-from pccontext.backend.kupo import KupoChainContextExtension
-from pycardano.backend.base import (
-    ChainContext,
-    ProtocolParameters as PyCardanoProtocolParameters,
-)
+from ogmios.datatypes import Address as OgmiosAddress
+from ogmios.datatypes import Era as OgmiosEra
+from ogmios.datatypes import ProtocolParameters as OgmiosProtocolParameters
+from ogmios.datatypes import Tip as OgmiosTip
+from ogmios.datatypes import TxOutputReference as OgmiosTxOutputReference
+from ogmios.datatypes import Utxo as OgmiosUtxo
+from ogmios.utils import GenesisParameters as OgmiosGenesisParameters
+from ogmios.utils import get_current_era
+from pycardano.backend.base import ChainContext
+from pycardano.backend.base import ProtocolParameters as PyCardanoProtocolParameters
+from pycardano.hash import DatumHash, ScriptHash
 from pycardano.network import Network
-from pycardano.transaction import (
-    UTxO,
-    TransactionOutput,
-    Value,
-    TransactionInput,
-    MultiAsset,
-    AssetName,
-    Asset,
-    Address,
-)
 from pycardano.plutus import (
+    ExecutionUnits,
     PlutusV1Script,
     PlutusV2Script,
     PlutusV3Script,
-    ExecutionUnits,
 )
-from pycardano.hash import ScriptHash, DatumHash
 from pycardano.serialization import RawCBOR
+from pycardano.transaction import (
+    Address,
+    Asset,
+    AssetName,
+    MultiAsset,
+    TransactionInput,
+    TransactionOutput,
+    UTxO,
+    Value,
+)
 
+from pccontext.backend.kupo import KupoChainContextExtension
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 
 ALONZO_COINS_PER_UTXO_WORD = 34482

@@ -1,4 +1,4 @@
-from pccontext import OgmiosChainContext, KupoChainContextExtension
+from pccontext import KupoChainContextExtension, OgmiosChainContext
 
 
 def main():

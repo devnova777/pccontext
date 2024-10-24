@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from pycardano import TransactionInput, TransactionOutput, Address, Value, MultiAsset
+from pycardano import Address, MultiAsset, TransactionInput, TransactionOutput, Value
 from yaci_client.models import EpochNo, ProtocolParamsDto, Utxo
 
 from pccontext import ProtocolParameters

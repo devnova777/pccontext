@@ -3,12 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from fractions import Fraction
 from pathlib import Path
-from typing import Optional, Dict, List, Union, Type, Any
+from typing import Any, Dict, List, Optional, Type, Union
 
-from pycardano import (
-    ALONZO_COINS_PER_UTXO_WORD,
-    ProtocolParameters as PyCardanoProtocolParameters,
-)
+from pycardano import ALONZO_COINS_PER_UTXO_WORD
+from pycardano import ProtocolParameters as PyCardanoProtocolParameters
 
 from pccontext.models import BaseModel
 from pccontext.utils import dump_json_file

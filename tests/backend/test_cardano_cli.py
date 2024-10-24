@@ -4,10 +4,6 @@ from typing import List
 from unittest.mock import patch
 
 import pytest
-
-from pccontext.backend import CardanoCliChainContext
-from pccontext.models import ProtocolParameters, GenesisParameters
-
 from pycardano import (
     ALONZO_COINS_PER_UTXO_WORD,
     CardanoCliNetwork,
@@ -17,6 +13,9 @@ from pycardano import (
     RawPlutusData,
     TransactionInput,
 )
+
+from pccontext.backend import CardanoCliChainContext
+from pccontext.models import GenesisParameters, ProtocolParameters
 
 QUERY_TIP_RESULT = {
     "block": 1460093,
