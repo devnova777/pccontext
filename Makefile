@@ -78,3 +78,9 @@ docs: ## build the documentation
 release: clean qa test format ## build dist version and release to pypi
 	poetry build
 	poetry publish
+
+changelog: ## Update changelog
+	cz ch
+
+bump: ## Bump version according to changelog
+	cz bump
