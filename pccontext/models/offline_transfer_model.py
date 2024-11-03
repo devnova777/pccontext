@@ -10,6 +10,7 @@ from pccontext.models import BaseModel
 from pccontext.utils import DATE_FORMAT_2, check_file_exists, dump_file, load_json_file
 
 from .address_info_model import AddressInfo
+from .genesis_parameters_model import GenesisParameters
 from .protocol_parameters_model import ProtocolParameters
 from .token_metadata_model import TokenMetadata
 
@@ -50,7 +51,8 @@ class OfflineTransferProtocol(BaseModel):
     Offline transfer json file protocol property model class
     """
 
-    parameters: Optional[ProtocolParameters] = None
+    protocol_parameters: Optional[ProtocolParameters] = None
+    genesis_parameters: Optional[GenesisParameters] = None
     era: Optional[Era] = None
     network: Optional[Network] = None
 
@@ -70,8 +72,10 @@ class OfflineTransferProtocol(BaseModel):
         :param init_args: The initialization arguments
         :return: The property
         """
-        if field_name == "parameters":
+        if field_name == "protocol_parameters":
             return ProtocolParameters.from_dict(value)
+        elif field_name == "genesis_parameters":
+            return GenesisParameters.from_dict(value)
 
 
 @dataclass(frozen=True)
@@ -240,7 +244,7 @@ class OfflineTransfer(BaseModel):
                 "online_node_version": None,
             },
             "protocol": {
-                "parameters": None,
+                "protocol_parameters": None,
                 "era": None,
             },
             "history": [
