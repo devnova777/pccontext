@@ -5,8 +5,9 @@ from datetime import datetime
 from fractions import Fraction
 from typing import Any, Dict, Optional, Union
 
-from pccontext.models import BaseModel
 from pycardano import GenesisParameters as PyCardanoGenesisParameters
+
+from pccontext.models import BaseModel
 
 __all__ = ["GenesisParameters"]
 

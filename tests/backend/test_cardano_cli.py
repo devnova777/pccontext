@@ -781,7 +781,7 @@ def override_run_command(cmd: List[str]):
     """
     if "tip" in cmd:
         return json.dumps(QUERY_TIP_RESULT)
-    if "protocol-protocol_parameters" in cmd:
+    if "protocol-parameters" in cmd:
         return json.dumps(QUERY_PROTOCOL_PARAMETERS_RESULT)
     if "utxo" in cmd:
         return json.dumps(QUERY_UTXO_RESULT)

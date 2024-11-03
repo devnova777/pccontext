@@ -1,10 +1,7 @@
-from datetime import datetime
-from unittest.mock import patch
-
 from freezegun import freeze_time
 from pycardano import Network
 
-from pccontext import OfflineTransferFileContext, GenesisParameters, ProtocolParameters
+from pccontext import GenesisParameters, OfflineTransferFileContext, ProtocolParameters
 
 
 def test_offline_chain_context(offline_transfer_file):
