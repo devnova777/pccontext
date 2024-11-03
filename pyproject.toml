@@ -41,6 +41,7 @@ faker = "^28.4.1"
 pytest-cov = "^5.0.0"
 isort = "^5.13.2"
 flake8-pyproject = "^1.2.3"
+freezegun = "^1.5.1"
 
 
 [build-system]
