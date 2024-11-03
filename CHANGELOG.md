@@ -1,3 +1,9 @@
+## 0.2.1 (2024-11-02)
+
+### Fix
+
+- add calculate epoch and tip to OffflineContext
+
 ## 0.2.0 (2024-10-24)
 
 ### Feat
