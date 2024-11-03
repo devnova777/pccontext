@@ -45,8 +45,11 @@ def test_offline_transfer_protocol(fake_offline_transfer_protocol):
 
     # Assert
     assert offline_transfer_protocol is not None
-    assert offline_transfer_protocol.parameters == ProtocolParameters.from_json(
-        fake_offline_transfer_protocol["parameters"]
+    assert (
+        offline_transfer_protocol.protocol_parameters
+        == ProtocolParameters.from_json(
+            fake_offline_transfer_protocol["protocol_parameters"]
+        )
     )
     assert offline_transfer_protocol.era == Era(
         fake_offline_transfer_protocol["era"].lower()
@@ -157,8 +160,11 @@ def test_offline_transfer(fake_offline_transfer):
     assert offline_transfer.protocol.network == Network(
         fake_offline_transfer["protocol"]["network"].lower()
     )
-    assert offline_transfer.protocol.parameters == ProtocolParameters.from_json(
-        fake_offline_transfer["protocol"]["parameters"]
+    assert (
+        offline_transfer.protocol.protocol_parameters
+        == ProtocolParameters.from_json(
+            fake_offline_transfer["protocol"]["protocol_parameters"]
+        )
     )
     assert offline_transfer.history == [
         OfflineTransferHistory.from_json(fake_offline_transfer["history"])

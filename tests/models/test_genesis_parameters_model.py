@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 
 from pccontext.models.genesis_parameters_model import GenesisParameters
 
@@ -36,10 +35,10 @@ def test_genesis_params_from_blockfrost(blockfrost_get_genesis_json):
     )
 
 
-def test_genesis_params_from_cli(cli_get_shelley_genesis_json):
-    genesis_params = GenesisParameters.from_json(cli_get_shelley_genesis_json)
+def test_genesis_params_from_cli(cli_shelley_genesis_json):
+    genesis_params = GenesisParameters.from_json(cli_shelley_genesis_json)
     assert genesis_params.active_slots_coefficient == float(
-        cli_get_shelley_genesis_json["activeSlotsCoeff"]
+        cli_shelley_genesis_json["activeSlotsCoeff"]
     )
 
 
@@ -76,9 +75,19 @@ def test_genesis_params_from_koios(koios_get_genesis_json):
     assert isinstance(genesis_params.alonzo_genesis, dict)
 
 
-def test_to_dict(fake_genesis_parameters):
+def test_to_dict(
+    fake_genesis_parameters,
+    cli_alonzo_genesis_json,
+    cli_byron_genesis_json,
+    cli_conway_genesis_json,
+    cli_shelley_genesis_json,
+):
     result = fake_genesis_parameters.to_dict()
     expected = {
+        "alonzoGenesis": cli_alonzo_genesis_json,
+        "byronGenesis": cli_byron_genesis_json,
+        "conwayGenesis": cli_conway_genesis_json,
+        "shelleyGenesis": cli_shelley_genesis_json,
         "activeSlotsCoeff": fake_genesis_parameters.active_slots_coefficient,
         "updateQuorum": fake_genesis_parameters.update_quorum,
         "maxLovelaceSupply": fake_genesis_parameters.max_lovelace_supply,

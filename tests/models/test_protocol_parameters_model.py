@@ -419,109 +419,113 @@ def test_from_json_ogmios(ogmios_protocol_parameters):
     )
 
 
-def test_from_json_cli(cli_protocol_parameters):
-    protocol_params = ProtocolParameters.from_json(cli_protocol_parameters)
+def test_from_json_cli(cli_protocol_parameters_json):
+    protocol_params = ProtocolParameters.from_json(cli_protocol_parameters_json)
     assert protocol_params.price_mem == float(
-        cli_protocol_parameters["executionUnitPrices"]["priceMemory"]
+        cli_protocol_parameters_json["executionUnitPrices"]["priceMemory"]
     )
     assert protocol_params.price_step == float(
-        cli_protocol_parameters["executionUnitPrices"]["priceSteps"]
+        cli_protocol_parameters_json["executionUnitPrices"]["priceSteps"]
     )
     assert protocol_params.max_tx_ex_mem == int(
-        cli_protocol_parameters["maxTxExecutionUnits"]["memory"]
+        cli_protocol_parameters_json["maxTxExecutionUnits"]["memory"]
     )
     assert protocol_params.max_tx_ex_steps == int(
-        cli_protocol_parameters["maxTxExecutionUnits"]["steps"]
+        cli_protocol_parameters_json["maxTxExecutionUnits"]["steps"]
     )
     assert protocol_params.max_block_ex_mem == int(
-        cli_protocol_parameters["maxBlockExecutionUnits"]["memory"]
+        cli_protocol_parameters_json["maxBlockExecutionUnits"]["memory"]
     )
     assert protocol_params.max_block_ex_steps == int(
-        cli_protocol_parameters["maxBlockExecutionUnits"]["steps"]
+        cli_protocol_parameters_json["maxBlockExecutionUnits"]["steps"]
     )
-    assert protocol_params.max_val_size == int(cli_protocol_parameters["maxValueSize"])
+    assert protocol_params.max_val_size == int(
+        cli_protocol_parameters_json["maxValueSize"]
+    )
     assert protocol_params.collateral_percent == int(
-        cli_protocol_parameters["collateralPercentage"]
+        cli_protocol_parameters_json["collateralPercentage"]
     )
     assert protocol_params.max_collateral_inputs == int(
-        cli_protocol_parameters["maxCollateralInputs"]
+        cli_protocol_parameters_json["maxCollateralInputs"]
     )
     assert protocol_params.coins_per_utxo_byte == int(
-        cli_protocol_parameters["coinsPerUtxoByte"]
+        cli_protocol_parameters_json["coinsPerUtxoByte"]
     )
     assert protocol_params.pvt_motion_no_confidence == float(
-        cli_protocol_parameters["poolVotingThresholds"]["motionNoConfidence"]
+        cli_protocol_parameters_json["poolVotingThresholds"]["motionNoConfidence"]
     )
     assert protocol_params.pvt_committee_normal == float(
-        cli_protocol_parameters["poolVotingThresholds"]["committeeNormal"]
+        cli_protocol_parameters_json["poolVotingThresholds"]["committeeNormal"]
     )
     assert protocol_params.pvt_committee_no_confidence == float(
-        cli_protocol_parameters["poolVotingThresholds"]["committeeNoConfidence"]
+        cli_protocol_parameters_json["poolVotingThresholds"]["committeeNoConfidence"]
     )
     assert protocol_params.pvt_hard_fork_initiation == float(
-        cli_protocol_parameters["poolVotingThresholds"]["hardForkInitiation"]
+        cli_protocol_parameters_json["poolVotingThresholds"]["hardForkInitiation"]
     )
     assert protocol_params.pvt_pp_security_group == float(
-        cli_protocol_parameters["poolVotingThresholds"]["ppSecurityGroup"]
+        cli_protocol_parameters_json["poolVotingThresholds"]["ppSecurityGroup"]
     )
     assert protocol_params.dvt_motion_no_confidence == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["motionNoConfidence"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["motionNoConfidence"]
     )
     assert protocol_params.dvt_committee_normal == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["committeeNormal"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["committeeNormal"]
     )
     assert protocol_params.dvt_committee_no_confidence == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["committeeNoConfidence"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["committeeNoConfidence"]
     )
     assert protocol_params.dvt_update_to_constitution == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["updateToConstitution"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["updateToConstitution"]
     )
     assert protocol_params.dvt_hard_fork_initiation == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["hardForkInitiation"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["hardForkInitiation"]
     )
     assert protocol_params.dvt_p_p_network_group == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["ppNetworkGroup"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["ppNetworkGroup"]
     )
     assert protocol_params.dvt_p_p_economic_group == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["ppEconomicGroup"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["ppEconomicGroup"]
     )
     assert protocol_params.dvt_p_p_technical_group == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["ppTechnicalGroup"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["ppTechnicalGroup"]
     )
     assert protocol_params.dvt_p_p_gov_group == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["ppGovGroup"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["ppGovGroup"]
     )
     assert protocol_params.dvt_treasury_withdrawal == float(
-        cli_protocol_parameters["dRepVotingThresholds"]["treasuryWithdrawal"]
+        cli_protocol_parameters_json["dRepVotingThresholds"]["treasuryWithdrawal"]
     )
     assert protocol_params.committee_min_size == int(
-        cli_protocol_parameters["committeeMinSize"]
+        cli_protocol_parameters_json["committeeMinSize"]
     )
     assert protocol_params.committee_max_term_length == int(
-        cli_protocol_parameters["committeeMaxTermLength"]
+        cli_protocol_parameters_json["committeeMaxTermLength"]
     )
     assert protocol_params.gov_action_lifetime == int(
-        cli_protocol_parameters["govActionLifetime"]
+        cli_protocol_parameters_json["govActionLifetime"]
     )
     assert protocol_params.gov_action_deposit == int(
-        cli_protocol_parameters["govActionDeposit"]
+        cli_protocol_parameters_json["govActionDeposit"]
     )
-    assert protocol_params.d_rep_deposit == int(cli_protocol_parameters["dRepDeposit"])
+    assert protocol_params.d_rep_deposit == int(
+        cli_protocol_parameters_json["dRepDeposit"]
+    )
     assert protocol_params.d_rep_activity == int(
-        cli_protocol_parameters["dRepActivity"]
+        cli_protocol_parameters_json["dRepActivity"]
     )
     assert protocol_params.min_fee_ref_script_cost_per_byte == int(
-        cli_protocol_parameters["minFeeRefScriptCostPerByte"]
+        cli_protocol_parameters_json["minFeeRefScriptCostPerByte"]
     )
 
 
-def test_to_dict(cli_protocol_parameters):
-    protocol_params = ProtocolParameters.from_json(cli_protocol_parameters)
+def test_to_dict(cli_protocol_parameters_json):
+    protocol_params = ProtocolParameters.from_json(cli_protocol_parameters_json)
     result = protocol_params.to_dict()
     assert isinstance(result, dict)
 
 
-def test_to_json(cli_protocol_parameters):
-    protocol_params = ProtocolParameters.from_json(cli_protocol_parameters)
+def test_to_json(cli_protocol_parameters_json):
+    protocol_params = ProtocolParameters.from_json(cli_protocol_parameters_json)
     result = protocol_params.to_json()
     assert isinstance(result, str)

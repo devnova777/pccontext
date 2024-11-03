@@ -781,7 +781,7 @@ def override_run_command(cmd: List[str]):
     """
     if "tip" in cmd:
         return json.dumps(QUERY_TIP_RESULT)
-    if "protocol-parameters" in cmd:
+    if "protocol-protocol_parameters" in cmd:
         return json.dumps(QUERY_PROTOCOL_PARAMETERS_RESULT)
     if "utxo" in cmd:
         return json.dumps(QUERY_UTXO_RESULT)
@@ -825,8 +825,8 @@ class TestCardanoCliChainContext:
         ).to_pycardano()
         assert chain_context.protocol_param == expected_protocol_params
 
-    def test_genesis(self, chain_context, cli_get_shelley_genesis_json):
-        expected_genesis = GenesisParameters.from_json(cli_get_shelley_genesis_json)
+    def test_genesis(self, chain_context, cli_shelley_genesis_json):
+        expected_genesis = GenesisParameters.from_json(cli_shelley_genesis_json)
         assert chain_context.genesis_param == expected_genesis
 
     def test_version(self, chain_context):
