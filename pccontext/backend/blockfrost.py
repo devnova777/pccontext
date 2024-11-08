@@ -8,7 +8,6 @@ import cbor2
 from blockfrost import ApiError, ApiUrls, BlockFrostApi
 from blockfrost.utils import Namespace
 from pycardano.address import Address
-from pycardano.backend.base import ChainContext
 from pycardano.backend.base import ProtocolParameters as PyCardanoProtocolParameters
 from pycardano.exception import TransactionFailedException
 from pycardano.hash import SCRIPT_HASH_SIZE, DatumHash, ScriptHash
@@ -33,6 +32,7 @@ from pycardano.transaction import (
 )
 from pycardano.types import JsonDict
 
+from pccontext.backend import ChainContext
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 
 __all__ = ["BlockFrostChainContext"]

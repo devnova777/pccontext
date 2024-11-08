@@ -225,7 +225,7 @@ class ProtocolVersion(BaseModel):
 
 
 @dataclass(frozen=True)
-class ProtocolParameters(BaseModel):
+class ProtocolParameters(BaseModel, PyCardanoProtocolParameters):
     collateral_percent: Optional[int] = field(
         default=None,
         metadata={"aliases": ["collateral_percent", "collateralPercentage"]},

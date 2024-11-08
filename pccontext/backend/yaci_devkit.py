@@ -3,7 +3,6 @@ from typing import Any, Dict, List, Optional, Union, cast
 import cbor2
 from pycardano import TransactionFailedException
 from pycardano.address import Address
-from pycardano.backend.base import ChainContext
 from pycardano.backend.base import ProtocolParameters as PyCardanoProtocolParameters
 from pycardano.hash import SCRIPT_HASH_SIZE, DatumHash, ScriptHash
 from pycardano.nativescript import NativeScript
@@ -49,6 +48,7 @@ from yaci_client.models import (
     StakeAccountInfo,
 )
 
+from pccontext.backend import ChainContext
 from pccontext.logging import logger
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 

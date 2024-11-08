@@ -12,7 +12,6 @@ from ogmios.datatypes import TxOutputReference as OgmiosTxOutputReference
 from ogmios.datatypes import Utxo as OgmiosUtxo
 from ogmios.utils import GenesisParameters as OgmiosGenesisParameters
 from ogmios.utils import get_current_era
-from pycardano.backend.base import ChainContext
 from pycardano.backend.base import ProtocolParameters as PyCardanoProtocolParameters
 from pycardano.hash import DatumHash, ScriptHash
 from pycardano.network import Network
@@ -34,6 +33,7 @@ from pycardano.transaction import (
     Value,
 )
 
+from pccontext.backend import ChainContext
 from pccontext.backend.kupo import KupoChainContextExtension
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 

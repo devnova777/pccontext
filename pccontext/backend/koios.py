@@ -9,7 +9,6 @@ from pycardano import (
     Address,
     Asset,
     AssetName,
-    ChainContext,
     DatumHash,
     ExecutionUnits,
     MultiAsset,
@@ -35,6 +34,7 @@ __all__ = ["KoiosChainContext"]
 from pycardano.types import JsonDict
 from requests import RequestException
 
+from pccontext.backend import ChainContext
 from pccontext.logging import logger
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 

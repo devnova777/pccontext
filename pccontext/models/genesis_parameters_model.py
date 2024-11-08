@@ -13,7 +13,7 @@ __all__ = ["GenesisParameters"]
 
 
 @dataclass(frozen=True)
-class GenesisParameters(BaseModel):
+class GenesisParameters(BaseModel, PyCardanoGenesisParameters):
     """
     Genesis parameters dataclass
     """
@@ -37,7 +37,7 @@ class GenesisParameters(BaseModel):
 
     era: Optional[str] = field(default=None, metadata={"aliases": ["era"]})
 
-    active_slots_coefficient: Optional[float] = field(
+    active_slots_coefficient: Optional[Union[Fraction, float]] = field(
         default=None,
         metadata={
             "aliases": [

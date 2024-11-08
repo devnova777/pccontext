@@ -3,7 +3,7 @@ from typing import Dict, List, Optional, Tuple, Union
 import requests
 from cachetools import Cache, LRUCache, TTLCache
 from pycardano.address import Address
-from pycardano.backend.base import ChainContext, GenesisParameters
+from pycardano.backend.base import GenesisParameters
 from pycardano.backend.base import ProtocolParameters as PyCardanoProtocolParameters
 from pycardano.backend.blockfrost import _try_fix_script
 from pycardano.hash import DatumHash, ScriptHash
@@ -25,6 +25,7 @@ from pycardano.transaction import (
     Value,
 )
 
+from pccontext.backend import ChainContext
 from pccontext.models import StakeAddressInfo
 
 __all__ = ["KupoChainContextExtension"]

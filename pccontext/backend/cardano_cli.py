@@ -17,7 +17,6 @@ import docker
 from cachetools import Cache, LRUCache, TTLCache, func
 from docker.errors import APIError
 from pycardano.address import Address
-from pycardano.backend.base import ChainContext
 from pycardano.backend.base import ProtocolParameters as PyCardanoProtocolParameters
 from pycardano.exception import (
     CardanoCliError,
@@ -40,6 +39,7 @@ from pycardano.transaction import (
 )
 from pycardano.types import JsonDict
 
+from pccontext.backend import ChainContext
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 
 __all__ = ["CardanoCliChainContext", "CardanoCliNetwork", "DockerConfig"]
