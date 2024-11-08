@@ -6,7 +6,6 @@ from pycardano import ChainContext as BaseChainContext
 
 from pccontext.models import StakeAddressInfo
 
-
 __all__ = [
     "ChainContext",
 ]
