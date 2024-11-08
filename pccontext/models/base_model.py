@@ -148,7 +148,7 @@ class BaseModel:
         Convert the model to a json string
         :return: The json string
         """
-        return json.dumps(self.to_dict())
+        return json.dumps(self.to_dict(), sort_keys=True)
 
     def _utxo_to_dict(self, utxo: UTxO) -> Dict:
         """
