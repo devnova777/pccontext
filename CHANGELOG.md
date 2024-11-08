@@ -1,3 +1,11 @@
+## 0.2.2 (2024-11-07)
+
+### Fix
+
+- return instead of raise
+- add sort keys
+- use PyCardano base models
+
 ## 0.2.1 (2024-11-02)
 
 ### Fix

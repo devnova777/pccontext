@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pccontext"
-version = "0.2.1"
+version = "0.2.2"
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
@@ -56,7 +56,7 @@ addopts = "-p no:cacheprovider"
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "0.2.1"
+version = "0.2.2"
 version_files = [
     "pccontexts/__init__.py:__version__",
     "pyproject.toml:version"
