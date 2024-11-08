@@ -81,7 +81,7 @@ def test_offline_transfer_history_to_json(fake_offline_transfer_history):
 
     # Assert
     assert json_output is not None
-    assert json_output == json.dumps(fake_offline_transfer_history)
+    assert json_output == json.dumps(fake_offline_transfer_history, sort_keys=True)
 
 
 def test_offline_transfer_file(fake_offline_transfer_file):

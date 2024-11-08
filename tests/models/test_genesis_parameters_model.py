@@ -1,4 +1,5 @@
 import json
+from fractions import Fraction
 
 from pccontext.models.genesis_parameters_model import GenesisParameters
 
@@ -48,7 +49,7 @@ def test_genesis_params_from_koios(koios_get_genesis_json):
         koios_get_genesis_json[0]["networkmagic"]
     )
     assert genesis_params.network_id == koios_get_genesis_json[0]["networkid"]
-    assert genesis_params.active_slots_coefficient == float(
+    assert genesis_params.active_slots_coefficient == str(
         koios_get_genesis_json[0]["activeslotcoeff"]
     )
     assert genesis_params.update_quorum == int(
@@ -117,6 +118,7 @@ def test_to_json(blockfrost_get_genesis_json):
             "slotsPerKESPeriod": blockfrost_get_genesis_json["slots_per_kes_period"],
             "systemStart": blockfrost_get_genesis_json["system_start"],
             "updateQuorum": blockfrost_get_genesis_json["update_quorum"],
-        }
+        },
+        sort_keys=True,
     )
     assert result == expected
