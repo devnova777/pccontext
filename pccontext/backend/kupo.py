@@ -265,4 +265,4 @@ class KupoChainContextExtension(ChainContext):
         Returns:
             List[StakeAddressInfo]: The stake address information.
         """
-        raise self._wrapped_backend.stake_address_info(stake_address)
+        return self._wrapped_backend.stake_address_info(stake_address)
