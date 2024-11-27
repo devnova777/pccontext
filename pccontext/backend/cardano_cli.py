@@ -418,20 +418,38 @@ class CardanoCliChainContext(ChainContext):
                     ["transaction", "submit", "--tx-file", tmp_tx_file.name]
                     + self._network_args
                 )
-            except CardanoCliError as err:
-                raise TransactionFailedException(
-                    "Failed to submit transaction"
-                ) from err
+            except CardanoCliError:
+                try:
+                    self._run_command(
+                        [
+                            "latest",
+                            "transaction",
+                            "submit",
+                            "--tx-file",
+                            tmp_tx_file.name,
+                        ]
+                        + self._network_args
+                    )
+                except CardanoCliError as err:
+                    raise TransactionFailedException(
+                        "Failed to submit transaction"
+                    ) from err
 
             # Get the transaction ID
             try:
                 txid = self._run_command(
                     ["transaction", "txid", "--tx-file", tmp_tx_file.name]
                 )
-            except CardanoCliError as err:
-                raise PyCardanoException(
-                    f"Unable to get transaction id for {tmp_tx_file.name}"
-                ) from err
+            except CardanoCliError:
+                try:
+                    self._run_command(
+                        ["latest", "transaction", "txid", "--tx-file", tmp_tx_file.name]
+                        + self._network_args
+                    )
+                except CardanoCliError as err:
+                    raise PyCardanoException(
+                        f"Unable to get transaction id for {tmp_tx_file.name}"
+                    ) from err
 
         return txid
 
