@@ -218,14 +218,14 @@ class CardanoCliChainContext(ChainContext):
             raise CardanoCliError(f"Cardano config file not found: {self._config_file}")
         with open(self._config_file, encoding="utf-8") as config_file:
             config_json = json.load(config_file)
-            shelly_genesis_file = (
+            shelley_genesis_file = (
                 self._config_file.parent / config_json["ShelleyGenesisFile"]
             )
-        if not shelly_genesis_file.exists() or not shelly_genesis_file.is_file():
+        if not shelley_genesis_file.exists() or not shelley_genesis_file.is_file():
             raise CardanoCliError(
-                f"Shelly Genesis file not found: {shelly_genesis_file}"
+                f"Shelley Genesis file not found: {shelley_genesis_file}"
             )
-        with open(shelly_genesis_file, encoding="utf-8") as genesis_file:
+        with open(shelley_genesis_file, encoding="utf-8") as genesis_file:
             genesis_json = json.load(genesis_file)
         return genesis_json
 

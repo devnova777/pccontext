@@ -28,8 +28,8 @@ from pccontext.utils import check_file_exists, dump_file, load_json_file
 __all__ = ["OfflineTransferFileContext"]
 
 
-def byron_to_shelly_epoch_transition(
-    network: Network, byron_to_shelly_epoch: Optional[int] = None
+def byron_to_shelley_epoch_transition(
+    network: Network, byron_to_shelley_epoch: Optional[int] = None
 ) -> int:
     """
     The number of Byron Epochs before the Chain forks to Shelley-Era
@@ -44,7 +44,7 @@ def byron_to_shelly_epoch_transition(
     elif network == Network.GUILDNET:
         return 2
     elif network == Network.CUSTOM:
-        return byron_to_shelly_epoch or 0
+        return byron_to_shelley_epoch or 0
     else:
         return 0
 
@@ -204,7 +204,7 @@ class OfflineTransferFileContext(ChainContext):
                 "Network not found in the offline transfer file protocol parameters."
             )
 
-        byron_to_shelley_epochs = byron_to_shelly_epoch_transition(
+        byron_to_shelley_epochs = byron_to_shelley_epoch_transition(
             self._offline_transfer.protocol.network
         )
 

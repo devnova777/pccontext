@@ -9,7 +9,7 @@ class Era(Enum):
     """
 
     BYRON = "byron"
-    SHELLY = "shelley"
+    SHELLEY = "shelley"
     ALLEGRA = "allegra"
     MARY = "mary"
     ALONZO = "alonzo"
