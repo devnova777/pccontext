@@ -1,3 +1,9 @@
+## 0.2.3 (2024-11-26)
+
+### Fix
+
+- handle transactions with latest cli
+
 ## 0.2.2 (2024-11-07)
 
 ### Fix
