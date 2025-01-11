@@ -1,3 +1,9 @@
+## 0.2.6 (2025-01-10)
+
+### Fix
+
+- convert time to int timestamp
+
 ## 0.2.5 (2025-01-10)
 
 ### Fix
