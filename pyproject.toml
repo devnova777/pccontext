@@ -58,7 +58,7 @@ addopts = "-p no:cacheprovider"
 name = "cz_conventional_commits"
 version = "0.2.5"
 version_files = [
-    "pccontexts/__init__.py:__version__",
+    "pccontext/__init__.py:__version__",
     "pyproject.toml:version"
 ]
 update_changelog_on_bump = true
