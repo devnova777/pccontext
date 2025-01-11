@@ -156,7 +156,16 @@ class OfflineTransferFileContext(ChainContext):
     @property
     def epoch(self) -> Union[int, None]:
         """Current epoch number"""
-        start_time_sec = self.genesis_param.system_start  # in seconds (UTC)
+        if isinstance(self.genesis_param.system_start, datetime):
+            start_time_sec = int(self.genesis_param.system_start.timestamp())
+        elif isinstance(self.genesis_param.system_start, str):
+            start_time_sec = int(
+                datetime.strptime(
+                    self.genesis_param.system_start, "%Y-%m-%dT%H:%M:%SZ"
+                ).timestamp()
+            )
+        else:
+            start_time_sec = self.genesis_param.system_start  # in seconds (UTC)
 
         current_time_sec = int(
             datetime.now(timezone.utc).timestamp()
