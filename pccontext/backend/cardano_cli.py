@@ -251,8 +251,10 @@ class CardanoCliChainContext(ChainContext):
     @property
     def genesis_param(self) -> GenesisParameters:
         """Get chain genesis parameters"""
-        genesis_params = self._query_genesis_config()
-        return GenesisParameters.from_json(genesis_params)
+        if not self._genesis_param:
+            genesis_params = self._query_genesis_config()
+            self._genesis_param = GenesisParameters.from_json(genesis_params)
+        return self._genesis_param
 
     @property
     def network(self) -> Network:
