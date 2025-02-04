@@ -41,6 +41,10 @@ from pycardano.types import JsonDict
 
 from pccontext.backend import ChainContext
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
+from pccontext.utils.validators import greater_than_version
+
+if greater_than_version((3, 13)):
+    from enum import member  # type: ignore[attr-defined]
 
 __all__ = ["CardanoCliChainContext", "CardanoCliNetwork", "DockerConfig"]
 
@@ -67,7 +71,11 @@ class CardanoCliNetwork(Enum):
     PREVIEW = ["--testnet-magic", str(2)]
     PREPROD = ["--testnet-magic", str(1)]
     GUILDNET = ["--testnet-magic", str(141)]
-    CUSTOM = partial(network_magic)
+    CUSTOM = (
+        member(partial(network_magic))
+        if greater_than_version((3, 13))
+        else partial(network_magic)
+    )
 
 
 class DockerConfig:

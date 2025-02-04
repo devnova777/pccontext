@@ -10,6 +10,8 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 description = "Chain Contexts for PyCardano library"
 homepage = "https://github.com/Python-Cardano/pycardano"
@@ -35,7 +37,7 @@ yaci-client = "^1.0"
 pytest = "^8.3.2"
 black = "^24.8.0"
 flake8 = "^7.1.1"
-mypy = "^1.11.2"
+mypy = "^1.14.1"
 ruff = "^0.6.3"
 faker = "^28.4.1"
 pytest-cov = "^5.0.0"

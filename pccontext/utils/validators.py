@@ -2,9 +2,12 @@
 This module contains custom validators
 """
 
+import sys
 import re
 
-__all__ = ["check_ada_handle_format"]
+__all__ = ["check_ada_handle_format", "greater_than_version"]
+
+from typing import Tuple
 
 
 def check_ada_handle_format(handle):
@@ -20,3 +23,12 @@ def check_ada_handle_format(handle):
         raise ValueError(
             f"Invalid AdaHandle format: {handle} (must be in the format $handle or $handle@subhandle)"
         )
+
+
+def greater_than_version(version: Tuple[int, int]) -> bool:
+    """
+    Check if the current Python version is greater than or equal to the specified version
+    :param version: Tuple of major and minor version
+    :return: True if the current Python version is greater than or equal to the specified version
+    """
+    return sys.version_info >= version
