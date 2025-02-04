@@ -2,8 +2,8 @@
 This module contains custom validators
 """
 
-import sys
 import re
+import sys
 
 __all__ = ["check_ada_handle_format", "greater_than_version"]
 
