@@ -1,3 +1,9 @@
+## 0.2.7 (2025-02-04)
+
+### Fix
+
+- add compatibility with Python 3.13
+
 ## 0.2.6 (2025-01-10)
 
 ### Fix
