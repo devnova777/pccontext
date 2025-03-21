@@ -1,3 +1,9 @@
+## 0.2.8 (2025-03-21)
+
+### Fix
+
+- update to latest pycardano
+
 ## 0.2.7 (2025-02-04)
 
 ### Fix
