@@ -27,9 +27,9 @@ license = "MIT"
 python = "^3.8.1"
 koios-python = "^2.0.0"
 requests = "^2.32.3"
-cachetools = "^5.5.0"
+cachetools = "^5.5.2"
 ogmios = "^1.2.1"
-pycardano =  "^0.12.0"
+pycardano =  "^0.13.0"
 yaci-client = "^1.0"
 
 
