@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from fractions import Fraction
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, Type
 
 from pycardano import GenesisParameters as PyCardanoGenesisParameters
 
@@ -114,6 +114,24 @@ class GenesisParameters(BaseModel, PyCardanoGenesisParameters):
         default=None,
         metadata={"aliases": ["update_quorum", "updateQuorum", "updatequorum"]},
     )
+
+    @classmethod
+    def property_from_dict(
+        cls: Type[GenesisParameters],
+        value: Dict,
+        key: str,
+        field_name: str,
+        init_args: Dict,
+    ):
+        """
+        Parse the property from a dictionary
+        :param value: The value
+        :param key: The key
+        :param field_name: The field name
+        :param init_args: The initialization arguments
+        :return: The property
+        """
+        return value
 
     @staticmethod
     def from_config_file(config_file: Path) -> GenesisParameters:

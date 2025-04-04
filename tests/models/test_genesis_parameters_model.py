@@ -36,6 +36,15 @@ def test_genesis_params_from_blockfrost(blockfrost_get_genesis_json):
     )
 
 
+def test_genesis_params_from_config(config_file):
+    genesis_params = GenesisParameters.from_config_file(config_file)
+    assert genesis_params is not None
+    assert genesis_params.alonzo_genesis is not None
+    assert genesis_params.byron_genesis is not None
+    assert genesis_params.conway_genesis is not None
+    assert genesis_params.shelley_genesis is not None
+
+
 def test_genesis_params_from_cli(cli_shelley_genesis_json):
     genesis_params = GenesisParameters.from_json(cli_shelley_genesis_json)
     assert genesis_params.active_slots_coefficient == float(
@@ -101,7 +110,11 @@ def test_to_dict(
         "maxKESEvolutions": fake_genesis_parameters.max_kes_evolutions,
         "securityParam": fake_genesis_parameters.security_param,
     }
+
+    from_json = GenesisParameters.from_json(result)
+
     assert result == expected
+    assert from_json == fake_genesis_parameters
 
 
 def test_to_json(blockfrost_get_genesis_json):
