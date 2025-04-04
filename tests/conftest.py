@@ -705,7 +705,46 @@ def mock_check_socket():
 
 
 @pytest.fixture(scope="session")
-def genesis_file(cli_shelley_genesis_json):
+def alonzo_genesis_file(cli_alonzo_genesis_json):
+    genesis_file_path = Path.cwd() / "alonzo-genesis.json"
+
+    with open(genesis_file_path, "w", encoding="utf-8") as file:
+        file.write(json.dumps(cli_alonzo_genesis_json, indent=4))
+
+    yield genesis_file_path
+
+    with contextlib.suppress(FileNotFoundError):
+        genesis_file_path.unlink()
+
+
+@pytest.fixture(scope="session")
+def byron_genesis_file(cli_byron_genesis_json):
+    genesis_file_path = Path.cwd() / "byron-genesis.json"
+
+    with open(genesis_file_path, "w", encoding="utf-8") as file:
+        file.write(json.dumps(cli_byron_genesis_json, indent=4))
+
+    yield genesis_file_path
+
+    with contextlib.suppress(FileNotFoundError):
+        genesis_file_path.unlink()
+
+
+@pytest.fixture(scope="session")
+def conway_genesis_file(cli_conway_genesis_json):
+    genesis_file_path = Path.cwd() / "conway-genesis.json"
+
+    with open(genesis_file_path, "w", encoding="utf-8") as file:
+        file.write(json.dumps(cli_conway_genesis_json, indent=4))
+
+    yield genesis_file_path
+
+    with contextlib.suppress(FileNotFoundError):
+        genesis_file_path.unlink()
+
+
+@pytest.fixture(scope="session")
+def shelley_genesis_file(cli_shelley_genesis_json):
     genesis_file_path = Path.cwd() / "shelley-genesis.json"
 
     with open(genesis_file_path, "w", encoding="utf-8") as file:
@@ -718,17 +757,19 @@ def genesis_file(cli_shelley_genesis_json):
 
 
 @pytest.fixture(scope="session")
-def config_file():
+def config_file(
+    alonzo_genesis_file, byron_genesis_file, conway_genesis_file, shelley_genesis_file
+):
     config_file_path = Path.cwd() / "config.json"
 
     config_json = {
-        "AlonzoGenesisFile": "alonzo-genesis.json",
+        "AlonzoGenesisFile": alonzo_genesis_file.as_posix(),
         "AlonzoGenesisHash": "7e94a15f55d1e82d10f09203fa1d40f8eede58fd8066542cf6566008068ed874",
         "ApplicationName": "cardano-sl",
         "ApplicationVersion": 0,
-        "ByronGenesisFile": "byron-genesis.json",
+        "ByronGenesisFile": byron_genesis_file.as_posix(),
         "ByronGenesisHash": "d4b8de7a11d929a323373cbab6c1a9bdc931beffff11db111cf9d57356ee1937",
-        "ConwayGenesisFile": "conway-genesis.json",
+        "ConwayGenesisFile": conway_genesis_file.as_posix(),
         "ConwayGenesisHash": "f28f1c1280ea0d32f8cd3143e268650d6c1a8e221522ce4a7d20d62fc09783e1",
         "EnableP2P": True,
         "LastKnownBlockVersion-Alt": 0,
@@ -736,7 +777,7 @@ def config_file():
         "LastKnownBlockVersion-Minor": 0,
         "Protocol": "Cardano",
         "RequiresNetworkMagic": "RequiresMagic",
-        "ShelleyGenesisFile": "shelley-genesis.json",
+        "ShelleyGenesisFile": shelley_genesis_file.as_posix(),
         "ShelleyGenesisHash": "162d29c4e1cf6b8a84f2d692e67a3ac6bc7851bc3e6e4afe64d15778bed8bd86",
         "TargetNumberOfActivePeers": 20,
         "TargetNumberOfEstablishedPeers": 50,

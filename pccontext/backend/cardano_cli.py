@@ -26,7 +26,13 @@ from pycardano.exception import (
 from pycardano.hash import DatumHash, ScriptHash
 from pycardano.nativescript import NativeScript
 from pycardano.network import Network
-from pycardano.plutus import Datum, PlutusV1Script, PlutusV2Script, RawPlutusData
+from pycardano.plutus import (
+    Datum,
+    PlutusV1Script,
+    PlutusV2Script,
+    PlutusV3Script,
+    RawPlutusData,
+)
 from pycardano.serialization import RawCBOR
 from pycardano.transaction import (
     Asset,
@@ -221,21 +227,8 @@ class CardanoCliChainContext(ChainContext):
         )
         return json.loads(result)
 
-    def _query_genesis_config(self) -> JsonDict:
-        if not self._config_file.exists() or not self._config_file.is_file():
-            raise CardanoCliError(f"Cardano config file not found: {self._config_file}")
-        with open(self._config_file, encoding="utf-8") as config_file:
-            config_json = json.load(config_file)
-            shelley_genesis_file = (
-                self._config_file.parent / config_json["ShelleyGenesisFile"]
-            )
-        if not shelley_genesis_file.exists() or not shelley_genesis_file.is_file():
-            raise CardanoCliError(
-                f"Shelley Genesis file not found: {shelley_genesis_file}"
-            )
-        with open(shelley_genesis_file, encoding="utf-8") as genesis_file:
-            genesis_json = json.load(genesis_file)
-        return genesis_json
+    def _query_genesis_config(self) -> GenesisParameters:
+        return GenesisParameters.from_config_file(self._config_file)
 
     def _is_chain_tip_updated(self):
         # fetch at almost every twenty seconds!
@@ -260,8 +253,7 @@ class CardanoCliChainContext(ChainContext):
     def genesis_param(self) -> GenesisParameters:
         """Get chain genesis parameters"""
         if not self._genesis_param:
-            genesis_params = self._query_genesis_config()
-            self._genesis_param = GenesisParameters.from_json(genesis_params)
+            self._genesis_param = self._query_genesis_config()
         return self._genesis_param
 
     @property
@@ -319,6 +311,11 @@ class CardanoCliChainContext(ChainContext):
                 cbor2.loads(bytes.fromhex(script_json["cborHex"]))
             )
             return v2script
+        elif script_type == "PlutusScriptV3":
+            v3script = PlutusV3Script(
+                cbor2.loads(bytes.fromhex(script_json["cborHex"]))
+            )
+            return v3script
         else:
             return NativeScript.from_dict(script_json)
 

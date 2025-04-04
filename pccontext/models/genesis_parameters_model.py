@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from fractions import Fraction
+from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
 from pycardano import GenesisParameters as PyCardanoGenesisParameters
 
+from pccontext.exceptions import CardanoModelError
 from pccontext.models import BaseModel
 
 __all__ = ["GenesisParameters"]
@@ -111,6 +114,96 @@ class GenesisParameters(BaseModel, PyCardanoGenesisParameters):
         default=None,
         metadata={"aliases": ["update_quorum", "updateQuorum", "updatequorum"]},
     )
+
+    @staticmethod
+    def from_config_file(config_file: Path) -> GenesisParameters:
+        """
+        Create a GenesisParameters object from a config file
+        :param config_file: Path to the config file
+        :return: GenesisParameters object
+        """
+        if not config_file.exists() or not config_file.is_file():
+            raise CardanoModelError(f"Cardano config file not found: {config_file}")
+        with open(config_file, encoding="utf-8") as file:
+            config_json = json.load(file)
+            alonzo_genesis_file = config_file.parent / config_json["AlonzoGenesisFile"]
+            byron_genesis_file = config_file.parent / config_json["ByronGenesisFile"]
+            conway_genesis_file = config_file.parent / config_json["ConwayGenesisFile"]
+            shelley_genesis_file = (
+                config_file.parent / config_json["ShelleyGenesisFile"]
+            )
+
+        if not alonzo_genesis_file.exists() or not alonzo_genesis_file.is_file():
+            raise CardanoModelError(
+                f"Alonzo Genesis file not found: {alonzo_genesis_file}"
+            )
+        if not byron_genesis_file.exists() or not byron_genesis_file.is_file():
+            raise CardanoModelError(
+                f"Byron Genesis file not found: {byron_genesis_file}"
+            )
+        if not conway_genesis_file.exists() or not conway_genesis_file.is_file():
+            raise CardanoModelError(
+                f"Conway Genesis file not found: {conway_genesis_file}"
+            )
+        if not shelley_genesis_file.exists() or not shelley_genesis_file.is_file():
+            raise CardanoModelError(
+                f"Shelley Genesis file not found: {shelley_genesis_file}"
+            )
+
+        with open(alonzo_genesis_file, encoding="utf-8") as alonzo_file:
+            alonzo_json = json.load(alonzo_file)
+        with open(byron_genesis_file, encoding="utf-8") as byron_file:
+            byron_json = json.load(byron_file)
+        with open(conway_genesis_file, encoding="utf-8") as conway_file:
+            conway_json = json.load(conway_file)
+        with open(shelley_genesis_file, encoding="utf-8") as shelley_file:
+            shelley_json = json.load(shelley_file)
+
+        return GenesisParameters.from_genesis_files(
+            alonzo_genesis=alonzo_json,
+            byron_genesis=byron_json,
+            conway_genesis=conway_json,
+            shelley_genesis=shelley_json,
+        )
+
+    @staticmethod
+    def from_genesis_files(
+        alonzo_genesis: Dict[str, Any],
+        byron_genesis: Dict[str, Any],
+        conway_genesis: Dict[str, Any],
+        shelley_genesis: Dict[str, Any],
+    ) -> GenesisParameters:
+        """
+        Create a GenesisParameters object from genesis files
+        :param alonzo_genesis: Alonzo genesis file path
+        :param byron_genesis: Byron genesis file
+        :param conway_genesis: Conway genesis file path
+        :param shelley_genesis: Shelley genesis file path
+        :return: GenesisParameters object
+        """
+        genesis = GenesisParameters.from_json(shelley_genesis)
+        return GenesisParameters(
+            alonzo_genesis=alonzo_genesis,
+            byron_genesis=byron_genesis,
+            conway_genesis=conway_genesis,
+            shelley_genesis=shelley_genesis,
+            era=genesis.era,
+            active_slots_coefficient=genesis.active_slots_coefficient,
+            epoch_length=genesis.epoch_length,
+            gen_delegs=genesis.gen_delegs,
+            initial_funds=genesis.initial_funds,
+            max_kes_evolutions=genesis.max_kes_evolutions,
+            max_lovelace_supply=genesis.max_lovelace_supply,
+            network_id=genesis.network_id,
+            network_magic=genesis.network_magic,
+            protocol_params=genesis.protocol_params,
+            security_param=genesis.security_param,
+            slot_length=genesis.slot_length,
+            slots_per_kes_period=genesis.slots_per_kes_period,
+            staking=genesis.staking,
+            system_start=genesis.system_start,
+            update_quorum=genesis.update_quorum,
+        )
 
     def to_pycardano(self) -> PyCardanoGenesisParameters:
         """

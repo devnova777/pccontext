@@ -794,11 +794,10 @@ def override_run_command(cmd: List[str]):
 
 
 @pytest.fixture
-def chain_context(genesis_file, config_file):
+def chain_context(config_file):
     """
     Create a CardanoCliChainContext with a mock run_command method
     Args:
-        genesis_file: The genesis file
         config_file: The config file
 
     Returns:
@@ -825,9 +824,13 @@ class TestCardanoCliChainContext:
         ).to_pycardano()
         assert chain_context.protocol_param == expected_protocol_params
 
-    def test_genesis(self, chain_context, cli_shelley_genesis_json):
-        expected_genesis = GenesisParameters.from_json(cli_shelley_genesis_json)
+    def test_genesis(self, chain_context, config_file):
+        expected_genesis = GenesisParameters.from_config_file(config_file)
         assert chain_context.genesis_param == expected_genesis
+        assert chain_context.genesis_param.alonzo_genesis is not None
+        assert chain_context.genesis_param.byron_genesis is not None
+        assert chain_context.genesis_param.conway_genesis is not None
+        assert chain_context.genesis_param.shelley_genesis is not None
 
     def test_version(self, chain_context):
         assert (
