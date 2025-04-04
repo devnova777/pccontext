@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from fractions import Fraction
 from pathlib import Path
-from typing import Any, Dict, Optional, Union, Type
+from typing import Any, Dict, Optional, Type, Union
 
 from pycardano import GenesisParameters as PyCardanoGenesisParameters
 
