@@ -38,7 +38,7 @@ class GenesisParameters(BaseModel, PyCardanoGenesisParameters):
         metadata={"aliases": ["shelley_genesis", "shelleyGenesis", "shelleygenesis"]},
     )
 
-    era: Optional[str] = field(default=None, metadata={"aliases": ["era"]})
+    era: Optional[str] = field(default="conway", metadata={"aliases": ["era"]})
 
     active_slots_coefficient: Optional[Union[Fraction, float]] = field(
         default=None,

@@ -89,6 +89,7 @@ def test_to_dict(
         "byronGenesis": cli_byron_genesis_json,
         "conwayGenesis": cli_conway_genesis_json,
         "shelleyGenesis": cli_shelley_genesis_json,
+        "era": "conway",
         "activeSlotsCoeff": fake_genesis_parameters.active_slots_coefficient,
         "updateQuorum": fake_genesis_parameters.update_quorum,
         "maxLovelaceSupply": fake_genesis_parameters.max_lovelace_supply,
@@ -108,6 +109,7 @@ def test_to_json(blockfrost_get_genesis_json):
     result = genesis_params.to_json()
     expected = json.dumps(
         {
+            "era": "conway",
             "activeSlotsCoeff": blockfrost_get_genesis_json["active_slots_coefficient"],
             "epochLength": blockfrost_get_genesis_json["epoch_length"],
             "maxKESEvolutions": blockfrost_get_genesis_json["max_kes_evolutions"],
