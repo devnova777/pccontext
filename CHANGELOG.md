@@ -1,3 +1,9 @@
+## 0.2.9 (2025-04-03)
+
+### Fix
+
+- create genesis params from config files
+
 ## 0.2.8 (2025-03-21)
 
 ### Fix
