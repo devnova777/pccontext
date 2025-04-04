@@ -1,3 +1,9 @@
+## 0.2.11 (2025-04-03)
+
+### Fix
+
+- add property_from_dict to handle genesis
+
 ## 0.2.10 (2025-04-03)
 
 ### Fix
