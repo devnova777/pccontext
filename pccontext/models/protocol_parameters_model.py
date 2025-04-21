@@ -1003,25 +1003,25 @@ class ProtocolParameters(BaseModel, PyCardanoProtocolParameters):
                 if self.execution_unit_prices
                 else None
             ),
+            "extraPraosEntropy": self.extra_entropy or None,
             "govActionDeposit": self.gov_action_deposit,
             "govActionLifetime": self.gov_action_lifetime,
             "maxBlockBodySize": self.max_block_size,
-            "maxBlockExecutionUnits": (
-                self.max_block_execution_units.to_dict()
-                if self.max_block_execution_units
-                else None
-            ),
+            "maxBlockExecutionUnits": {
+                "memory": self.max_block_execution_units.memory,
+                "steps": self.max_block_execution_units.steps,
+            },
             "maxBlockHeaderSize": self.max_block_header_size,
             "maxCollateralInputs": self.max_collateral_inputs,
-            "maxTxExecutionUnits": (
-                self.max_tx_execution_units.to_dict()
-                if self.max_tx_execution_units
-                else None
-            ),
+            "maxTxExecutionUnits": {
+                "memory": self.max_tx_execution_units.memory,
+                "steps": self.max_tx_execution_units.steps,
+            },
             "maxTxSize": self.max_tx_size,
             "maxValueSize": self.max_val_size,
             "minFeeRefScriptCostPerByte": self.min_fee_ref_script_cost_per_byte,
             "minPoolCost": self.min_pool_cost,
+            "minUTxOValue": self.min_utxo_value or None,
             "monetaryExpansion": (
                 float(self.monetary_expansion) if self.monetary_expansion else None
             ),
