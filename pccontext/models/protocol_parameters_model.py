@@ -1008,14 +1008,30 @@ class ProtocolParameters(BaseModel, PyCardanoProtocolParameters):
             "govActionLifetime": self.gov_action_lifetime,
             "maxBlockBodySize": self.max_block_size,
             "maxBlockExecutionUnits": {
-                "memory": self.max_block_execution_units.memory,
-                "steps": self.max_block_execution_units.steps,
+                "memory": (
+                    self.max_block_execution_units.memory
+                    if self.max_block_execution_units
+                    else None
+                ),
+                "steps": (
+                    self.max_block_execution_units.steps
+                    if self.max_block_execution_units
+                    else None
+                ),
             },
             "maxBlockHeaderSize": self.max_block_header_size,
             "maxCollateralInputs": self.max_collateral_inputs,
             "maxTxExecutionUnits": {
-                "memory": self.max_tx_execution_units.memory,
-                "steps": self.max_tx_execution_units.steps,
+                "memory": (
+                    self.max_tx_execution_units.memory
+                    if self.max_tx_execution_units
+                    else None
+                ),
+                "steps": (
+                    self.max_tx_execution_units.steps
+                    if self.max_tx_execution_units
+                    else None
+                ),
             },
             "maxTxSize": self.max_tx_size,
             "maxValueSize": self.max_val_size,
