@@ -1,3 +1,10 @@
+## 0.2.12 (2025-04-21)
+
+### Fix
+
+- remove network args from tx id
+- handle protocol parameters better
+
 ## 0.2.11 (2025-04-03)
 
 ### Fix
