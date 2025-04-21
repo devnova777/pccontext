@@ -451,7 +451,6 @@ class CardanoCliChainContext(ChainContext):
                 try:
                     self._run_command(
                         ["latest", "transaction", "txid", "--tx-file", tmp_tx_file.name]
-                        + self._network_args
                     )
                 except CardanoCliError as err:
                     raise PyCardanoException(
