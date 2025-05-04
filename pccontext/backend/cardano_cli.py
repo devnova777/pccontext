@@ -449,7 +449,7 @@ class CardanoCliChainContext(ChainContext):
                 )
             except CardanoCliError:
                 try:
-                    self._run_command(
+                    txid = self._run_command(
                         ["latest", "transaction", "txid", "--tx-file", tmp_tx_file.name]
                     )
                 except CardanoCliError as err:
