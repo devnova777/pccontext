@@ -1,3 +1,13 @@
+## 0.3.0 (2025-05-04)
+
+### Feat
+
+- add transaction assembly and signing functionality
+
+### Fix
+
+- store transaction ID from command execution
+
 ## 0.2.12 (2025-04-21)
 
 ### Fix
