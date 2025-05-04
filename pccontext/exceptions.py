@@ -111,3 +111,15 @@ class BinaryExecutableError(Exception):
     def __init__(self, message="Binary executable did not run successfully"):
         self.message = message
         super().__init__(self.message)
+
+
+class TransactionError(Exception):
+    """
+    Exception raised when a transaction did not build successfully
+
+    :param message: explanation of the error
+    """
+
+    def __init__(self, message="Transaction did not build successfully"):
+        self.message = message
+        super().__init__(self.message)
