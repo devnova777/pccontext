@@ -1,9 +1,9 @@
 from pycardano import (
-    StakeVerificationKey,
-    StakeSigningKey,
+    Address,
     PaymentSigningKey,
     PaymentVerificationKey,
-    Address,
+    StakeSigningKey,
+    StakeVerificationKey,
     VerificationKeyWitness,
 )
 

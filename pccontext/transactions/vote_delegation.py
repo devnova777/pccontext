@@ -1,16 +1,16 @@
 from typing import Optional
 
 from pycardano import (
-    StakeVerificationKey,
     Address,
-    Transaction,
-    StakeCredential,
-    VoteDelegation,
-    TransactionBuilder,
-    DRepKind,
     DRep,
+    DRepKind,
     ScriptHash,
+    StakeCredential,
+    StakeVerificationKey,
+    Transaction,
+    TransactionBuilder,
     VerificationKeyHash,
+    VoteDelegation,
 )
 
 from pccontext import ChainContext
@@ -36,10 +36,14 @@ def vote_delegation(
 
     if drep_kind in [DRepKind.ALWAYS_ABSTAIN, DRepKind.ALWAYS_NO_CONFIDENCE]:
         drep = DRep(drep_kind)
-    elif drep_kind == DRepKind.SCRIPT_HASH:
+    elif drep_kind == DRepKind.SCRIPT_HASH and drep_id is not None:
         drep = DRep(drep_kind, ScriptHash(bytes.fromhex(drep_id)))
-    else:
+    elif drep_id is not None:
         drep = DRep(drep_kind, VerificationKeyHash(bytes.fromhex(drep_id)))
+    else:
+        raise ValueError(
+            "DRep ID must be provided for DRepKind SCRIPT_HASH or VERIFICATION_KEY_HASH."
+        )
 
     vote_delegation_certificate = VoteDelegation(stake_credential, drep)
 

@@ -1,10 +1,10 @@
 from pycardano import (
-    StakeVerificationKey,
     Address,
-    Transaction,
+    PoolKeyHash,
     StakeCredential,
     StakeDelegation,
-    PoolKeyHash,
+    StakeVerificationKey,
+    Transaction,
     TransactionBuilder,
 )
 
@@ -38,7 +38,8 @@ def stake_delegation(
     if stake_address_info is not None and len(stake_address_info):
         raise TransactionError(
             f"Stake-Address: {str(stake_address)} is already registered on the chain!\n "
-            f"{f"Account is currently delegated to Pool with ID: {stake_address_info[0].stake_delegation}\n" if stake_address_info[0].stake_delegation else ''}"
+            f"{f"Account is currently delegated to Pool with ID: "
+               f" {stake_address_info[0].stake_delegation}\n" if stake_address_info[0].stake_delegation else ''}"
         )
 
     builder = TransactionBuilder(context)

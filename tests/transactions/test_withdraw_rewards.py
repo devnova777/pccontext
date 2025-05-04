@@ -4,11 +4,7 @@ from typing import List
 from unittest.mock import patch
 
 import pytest
-from pycardano import (
-    StakeSigningKey,
-    StakeVerificationKey,
-    Address,
-)
+from pycardano import Address, StakeSigningKey, StakeVerificationKey
 
 from pccontext import CardanoCliChainContext, CardanoCliNetwork
 from pccontext.transactions.withdraw_rewards import withdraw_rewards

@@ -1,4 +1,4 @@
-from pycardano import StakeVerificationKey, StakeSigningKey, Address
+from pycardano import Address, StakeSigningKey, StakeVerificationKey
 
 from pccontext.transactions.stake_address_registration import stake_address_registration
 
