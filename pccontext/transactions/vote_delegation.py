@@ -38,8 +38,11 @@ def vote_delegation(
         drep = DRep(drep_kind)
     elif drep_kind == DRepKind.SCRIPT_HASH and drep_id is not None:
         drep = DRep(drep_kind, ScriptHash(bytes.fromhex(drep_id)))
-    elif drep_id is not None:
-        drep = DRep(drep_kind, VerificationKeyHash(bytes.fromhex(drep_id)))
+    elif drep_kind == DRepKind.VERIFICATION_KEY_HASH and drep_id is not None:
+        drep_bytes = bytes.fromhex(drep_id)
+        if len(drep_bytes) == 29:
+            drep_bytes = drep_bytes[1:]
+        drep = DRep(drep_kind, VerificationKeyHash(drep_bytes))
     else:
         raise ValueError(
             "DRep ID must be provided for DRepKind SCRIPT_HASH or VERIFICATION_KEY_HASH."
