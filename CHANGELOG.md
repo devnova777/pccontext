@@ -1,3 +1,9 @@
+## 0.3.1 (2025-05-05)
+
+### Fix
+
+- handle DRep ID processing for VERIFICATION_KEY_HASH with CIP129
+
 ## 0.3.0 (2025-05-04)
 
 ### Feat
