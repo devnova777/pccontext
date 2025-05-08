@@ -288,9 +288,9 @@ class BlockFrostChainContext(ChainContext):
 
         return [
             StakeAddressInfo(
-                address=rewards_state.get("stake_address", None),
-                stake_delegation=rewards_state.get("pool_id", None),
-                reward_account_balance=rewards_state.get("withdrawable_amount", None),
-                delegate_representative=rewards_state.get("drep_id", None),
+                address=rewards_state.stake_address,
+                stake_delegation=rewards_state.pool_id,
+                reward_account_balance=rewards_state.withdrawable_amount,
+                delegate_representative=rewards_state.drep_id,
             )
         ]
