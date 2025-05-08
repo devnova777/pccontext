@@ -1,3 +1,9 @@
+## 0.3.2 (2025-05-08)
+
+### Fix
+
+- fix access to rewards_state attributes in StakeAddressInfo
+
 ## 0.3.1 (2025-05-05)
 
 ### Fix
