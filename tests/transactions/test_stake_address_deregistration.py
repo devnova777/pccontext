@@ -10,7 +10,6 @@ from pccontext import CardanoCliChainContext, CardanoCliNetwork
 from pccontext.transactions.stake_address_deregistration import (
     stake_address_deregistration,
 )
-from pccontext.transactions.stake_address_registration import stake_address_registration
 
 
 @pytest.fixture

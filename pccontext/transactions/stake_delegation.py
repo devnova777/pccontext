@@ -35,12 +35,15 @@ def stake_delegation(
 
     stake_address_info = context.stake_address_info(str(stake_address))
 
-    if stake_address_info is not None and len(stake_address_info):
-        raise TransactionError(
-            f"Stake-Address: {str(stake_address)} is already registered on the chain!\n "
-            f"{f"Account is currently delegated to Pool with ID: "
-               f" {stake_address_info[0].stake_delegation}\n" if stake_address_info[0].stake_delegation else ''}"
+    if (
+        stake_address_info is None
+        or len(stake_address_info) == 0
+        or (
+            not stake_address_info[0].active
+            and stake_address_info[0].active_epoch is None
         )
+    ):
+        raise TransactionError("Staking Address may not be on chain.")
 
     builder = TransactionBuilder(context)
 

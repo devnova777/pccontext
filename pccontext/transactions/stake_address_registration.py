@@ -32,6 +32,7 @@ def stake_address_registration(
         stake_address_info is not None
         and len(stake_address_info)
         and stake_address_info[0].active
+        and stake_address_info[0].active_epoch is not None
     ):
         delegation_pool_id = stake_address_info[0].stake_delegation
         raise TransactionError(

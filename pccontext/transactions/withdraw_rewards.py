@@ -24,7 +24,11 @@ def withdraw_rewards(
 
     stake_address_info = context.stake_address_info(str(stake_address))
 
-    if stake_address_info is None or len(stake_address_info) == 0:
+    if (
+        stake_address_info is None
+        or len(stake_address_info) == 0
+        or not stake_address_info[0].active
+    ):
         raise TransactionError(
             "No rewards found on the stake address, Staking Address may not be on chain."
         )

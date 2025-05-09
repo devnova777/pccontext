@@ -289,6 +289,7 @@ class BlockFrostChainContext(ChainContext):
         return [
             StakeAddressInfo(
                 active=rewards_state.active,
+                active_epoch=rewards_state.active_epoch,
                 address=rewards_state.stake_address,
                 stake_delegation=rewards_state.pool_id,
                 reward_account_balance=rewards_state.withdrawable_amount,

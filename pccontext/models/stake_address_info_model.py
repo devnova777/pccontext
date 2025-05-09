@@ -13,6 +13,7 @@ class StakeAddressInfo(BaseModel):
     """
 
     active: Optional[bool] = field(default=True)
+    active_epoch: Optional[int] = field(default=None)
     address: Optional[str] = field(
         default=None, metadata={"aliases": ["stake_address", "address"]}
     )
