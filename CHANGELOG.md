@@ -1,3 +1,9 @@
+## 0.3.3 (2025-05-09)
+
+### Fix
+
+- add active attribute to StakeAddressInfo and update registration check
+
 ## 0.3.2 (2025-05-08)
 
 ### Fix
