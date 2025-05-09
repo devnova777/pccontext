@@ -12,6 +12,7 @@ class StakeAddressInfo(BaseModel):
     Stake address info model class
     """
 
+    active: Optional[bool] = field(default=True)
     address: Optional[str] = field(
         default=None, metadata={"aliases": ["stake_address", "address"]}
     )
@@ -26,6 +27,7 @@ class StakeAddressInfo(BaseModel):
                 "reward_account_balance",
                 "rewardAccountBalance",
                 "rewards_available",
+                "withdrawable_amount",
             ]
         },
     )

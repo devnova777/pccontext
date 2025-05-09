@@ -28,7 +28,7 @@ def stake_address_registration(
 
     stake_address_info = context.stake_address_info(str(stake_address))
 
-    if stake_address_info is not None and len(stake_address_info):
+    if stake_address_info is not None and len(stake_address_info) and stake_address_info[0].active:
         delegation_pool_id = stake_address_info[0].stake_delegation
         raise TransactionError(
             f"Stake-Address: {str(stake_address)} is already registered on the chain!\n "
