@@ -39,26 +39,21 @@ def withdraw_rewards(
         if reward.reward_account_balance != 0
     )
 
+    if rewards_sum == 0:
+        raise TransactionError("Rewards sum is 0, no rewards to withdraw.")
+
     withdrawal = Withdrawals({bytes(stake_address): rewards_sum})
 
     builder = TransactionBuilder(context)
 
-    builder.add_input_address(send_from_addr)
-
-    # utxos = context.utxos(send_from_addr)
-    # for utxo in utxos:
-    #     builder.add_input(utxo)
+    utxos = context.utxos(send_from_addr)
+    for utxo in utxos:
+        builder.add_input(utxo)
 
     builder.withdrawals = withdrawal
 
-    builder.required_signers = [
-        stake_vkey.hash(),
-        send_from_addr.payment_part,
-    ]
-
     transaction_body = builder.build(
         change_address=send_from_addr,
-        auto_required_signers=False,
         merge_change=True,
     )
 
