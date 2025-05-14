@@ -292,7 +292,7 @@ class BlockFrostChainContext(ChainContext):
                 active_epoch=rewards_state.active_epoch,
                 address=rewards_state.stake_address,
                 stake_delegation=rewards_state.pool_id,
-                reward_account_balance=rewards_state.withdrawable_amount,
+                reward_account_balance=int(rewards_state.withdrawable_amount),
                 delegate_representative=rewards_state.drep_id,
             )
         ]
