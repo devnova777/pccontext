@@ -1,3 +1,13 @@
+## 0.4.0 (2025-05-13)
+
+### Feat
+
+- add functions for stake address registration and delegation, vote delegation, and combined operations
+
+### Refactor
+
+- simplify stake and vote delegation logic by using helper functions
+
 ## 0.3.4 (2025-05-09)
 
 ### Fix
