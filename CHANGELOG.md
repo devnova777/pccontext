@@ -1,3 +1,10 @@
+## 0.4.1 (2025-05-14)
+
+### Fix
+
+- handle zero rewards case and streamline withdrawal input handling
+- cast withdrawable amount to int for reward account balance
+
 ## 0.4.0 (2025-05-13)
 
 ### Feat
