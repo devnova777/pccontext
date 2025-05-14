@@ -28,7 +28,8 @@ def stake_delegation(
     """
     stake_credential = StakeCredential(stake_vkey.hash())
     stake_delegation_certificate = StakeDelegation(
-        stake_credential, PoolKeyHash(bytes.fromhex(pool_id))
+        stake_credential=stake_credential,
+        pool_keyhash=PoolKeyHash(bytes.fromhex(pool_id)),
     )
 
     stake_address = Address(staking_part=stake_vkey.hash(), network=context.network)
