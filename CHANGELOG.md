@@ -1,3 +1,22 @@
+## 0.5.0 (2025-06-17)
+
+### Feat
+
+- enhance transaction signing with optional signing keys for multiple transaction types
+- add witness function for transaction signing with multiple keys
+- add methods for network conversion and CLI arguments in Network enum
+
+### Fix
+
+- add transaction-related functions to the module for improved usability
+- enhance BlockFrostChainContext with improved network handling and error management
+
+### Refactor
+
+- reorganize import statements for improved readability and consistency
+- update network references to use unified Network enum in tests
+- simplify CardanoCliNetwork usage and improve network argument handling
+
 ## 0.4.1 (2025-05-14)
 
 ### Fix
