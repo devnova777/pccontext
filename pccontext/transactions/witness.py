@@ -1,10 +1,6 @@
-from typing import List, Tuple
+from typing import List
 
-from pycardano import (
-    SigningKey,
-    TransactionBody,
-    VerificationKeyWitness,
-)
+from pycardano import SigningKey, TransactionBody, VerificationKeyWitness
 
 
 def witness(

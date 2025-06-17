@@ -1,7 +1,7 @@
 from .assemble import assemble_transaction
 from .sign import sign_transaction
-from .stake_address_registration import stake_address_registration
 from .stake_address_deregistration import stake_address_deregistration
+from .stake_address_registration import stake_address_registration
 from .stake_address_registration_and_delegation import (
     stake_address_registration_and_delegation,
 )

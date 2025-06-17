@@ -1,6 +1,7 @@
 """
 Cardano Network Enum
 """
+
 from enum import Enum
 from typing import List, Optional
 
@@ -28,7 +29,9 @@ class Network(Enum):
         else:
             return PyCardanoNetwork.TESTNET
 
-    def get_cli_network_args(self, network_magic_number: Optional[int] = None) -> List[str]:
+    def get_cli_network_args(
+        self, network_magic_number: Optional[int] = None
+    ) -> List[str]:
         """
         Returns the CLI network argument for the Cardano network.
         """

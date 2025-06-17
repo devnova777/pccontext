@@ -1,15 +1,15 @@
-from pycardano import (
-    Address,
-    StakeSigningKey,
-    StakeVerificationKey,
-    PaymentSigningKey,
-    PaymentVerificationKey,
-)
-
-from pccontext.transactions.stake_address_registration import stake_address_registration
 import os
 
+from pycardano import (
+    Address,
+    PaymentSigningKey,
+    PaymentVerificationKey,
+    StakeSigningKey,
+    StakeVerificationKey,
+)
+
 from pccontext import BlockFrostChainContext, Network
+from pccontext.transactions.stake_address_registration import stake_address_registration
 
 
 def main():

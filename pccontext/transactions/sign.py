@@ -1,13 +1,9 @@
-from typing import List, Tuple
+from typing import List
 
-from pycardano import (
-    SigningKey,
-    Transaction,
-    TransactionBody,
-)
+from pycardano import SigningKey, Transaction, TransactionBody
 
-from pccontext.transactions.witness import witness
 from pccontext.transactions.assemble import assemble_transaction
+from pccontext.transactions.witness import witness
 
 
 def sign_transaction(
