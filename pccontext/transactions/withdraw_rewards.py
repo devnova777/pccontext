@@ -1,9 +1,13 @@
+from typing import List, Union, Optional
+
 from pycardano import (
     Address,
     StakeVerificationKey,
     Transaction,
     TransactionBuilder,
     Withdrawals,
+    SigningKey,
+    ExtendedSigningKey,
 )
 
 from pccontext import ChainContext
@@ -11,13 +15,17 @@ from pccontext.exceptions import TransactionError
 
 
 def withdraw_rewards(
-    context: ChainContext, stake_vkey: StakeVerificationKey, send_from_addr: Address
+    context: ChainContext,
+    stake_vkey: StakeVerificationKey,
+    send_from_addr: Address,
+    signing_keys: Optional[List[Union[SigningKey, ExtendedSigningKey]]] = None,
 ) -> Transaction:
     """
     Withdraw rewards from a stake address.
     :param context: The chain context.
     :param stake_vkey: The stake address vkey file.
     :param send_from_addr: The address to send from.
+    :param signing_keys: List of signing keys to be used for signing the transaction.
     :return: An unsigned transaction object.
     """
     stake_address = Address(staking_part=stake_vkey.hash(), network=context.network)
@@ -52,9 +60,14 @@ def withdraw_rewards(
 
     builder.withdrawals = withdrawal
 
-    transaction_body = builder.build(
-        change_address=send_from_addr,
-        merge_change=True,
-    )
+    if signing_keys:
+        signed_tx = builder.build_and_sign(
+            signing_keys=signing_keys, change_address=send_from_addr, merge_change=True
+        )
+        return signed_tx
+    else:
+        transaction_body = builder.build(
+            change_address=send_from_addr, merge_change=True
+        )
 
-    return Transaction(transaction_body, builder.build_witness_set())
+        return Transaction(transaction_body, builder.build_witness_set())

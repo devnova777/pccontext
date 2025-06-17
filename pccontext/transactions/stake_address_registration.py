@@ -1,3 +1,5 @@
+from typing import List, Union, Optional
+
 from pycardano import (
     Address,
     StakeCredential,
@@ -5,6 +7,8 @@ from pycardano import (
     StakeVerificationKey,
     Transaction,
     TransactionBuilder,
+    SigningKey,
+    ExtendedSigningKey,
 )
 
 from pccontext import ChainContext
@@ -12,13 +16,17 @@ from pccontext.exceptions import TransactionError
 
 
 def stake_address_registration(
-    context: ChainContext, stake_vkey: StakeVerificationKey, send_from_addr: Address
+    context: ChainContext,
+    stake_vkey: StakeVerificationKey,
+    send_from_addr: Address,
+    signing_keys: Optional[List[Union[SigningKey, ExtendedSigningKey]]] = None,
 ) -> Transaction:
     """
     Generates an unwitnessed stake address registration transaction.
     :param context: The chain context.
     :param stake_vkey: The stake address vkey file.
     :param send_from_addr: The address to send from.
+    :param signing_keys: List of signing keys to be used for signing the transaction.
     :return: An unsigned transaction object.
     """
     stake_credential = StakeCredential(stake_vkey.hash())
@@ -47,6 +55,13 @@ def stake_address_registration(
 
     builder.certificates = [stake_registration_certificate]
 
-    transaction_body = builder.build(change_address=send_from_addr)
+    if signing_keys:
+        signed_tx = builder.build_and_sign(
+            signing_keys=signing_keys,
+            change_address=send_from_addr,
+        )
+        return signed_tx
+    else:
+        transaction_body = builder.build(change_address=send_from_addr)
 
-    return Transaction(transaction_body, builder.build_witness_set())
+        return Transaction(transaction_body, builder.build_witness_set())

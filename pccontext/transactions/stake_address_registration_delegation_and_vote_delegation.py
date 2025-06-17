@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Union, Optional
 
 from pycardano import (
     Address,
@@ -9,6 +9,8 @@ from pycardano import (
     StakeVerificationKey,
     Transaction,
     TransactionBuilder,
+    SigningKey,
+    ExtendedSigningKey,
 )
 
 from pccontext import ChainContext
@@ -23,6 +25,7 @@ def stake_address_registration_delegation_and_vote_delegation(
     send_from_addr: Address,
     drep_kind: DRepKind,
     drep_id: Optional[str] = None,
+    signing_keys: Optional[List[Union[SigningKey, ExtendedSigningKey]]] = None,
 ) -> Transaction:
     """
     Generates an unwitnessed stake address registration and vote delegation transaction.
@@ -32,6 +35,7 @@ def stake_address_registration_delegation_and_vote_delegation(
     :param send_from_addr: The address to send from.
     :param drep_kind: The DRep kind.
     :param drep_id: The Delegate Representative ID (hex).
+    :param signing_keys: List of signing keys to be used for signing the transaction.
     :return: An unsigned transaction object.
     """
     stake_credential = StakeCredential(stake_vkey.hash())
@@ -72,6 +76,13 @@ def stake_address_registration_delegation_and_vote_delegation(
         stake_registration_delegation_and_vote_delegation_certificate
     ]
 
-    transaction_body = builder.build(change_address=send_from_addr)
+    if signing_keys:
+        signed_tx = builder.build_and_sign(
+            signing_keys=signing_keys,
+            change_address=send_from_addr,
+        )
+        return signed_tx
+    else:
+        transaction_body = builder.build(change_address=send_from_addr)
 
-    return Transaction(transaction_body, builder.build_witness_set())
+        return Transaction(transaction_body, builder.build_witness_set())

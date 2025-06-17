@@ -1,3 +1,5 @@
+from typing import List, Union, Optional
+
 from pycardano import (
     Address,
     PoolKeyHash,
@@ -6,6 +8,8 @@ from pycardano import (
     StakeVerificationKey,
     Transaction,
     TransactionBuilder,
+    SigningKey,
+    ExtendedSigningKey,
 )
 
 from pccontext import ChainContext
@@ -17,6 +21,7 @@ def stake_address_registration_and_delegation(
     stake_vkey: StakeVerificationKey,
     pool_id: str,
     send_from_addr: Address,
+    signing_keys: Optional[List[Union[SigningKey, ExtendedSigningKey]]] = None,
 ) -> Transaction:
     """
     Generates an unwitnessed stake address registration and delegation transaction.
@@ -24,6 +29,7 @@ def stake_address_registration_and_delegation(
     :param stake_vkey: The stake address vkey file.
     :param pool_id: The pool ID (hex) to delegate to.
     :param send_from_addr: The address to send from.
+    :param signing_keys: List of signing keys to be used for signing the transaction.
     :return: An unsigned transaction object.
     """
     protocol_parameters = context.protocol_param
@@ -58,6 +64,13 @@ def stake_address_registration_and_delegation(
 
     builder.certificates = [registration_and_delegation_certificate]
 
-    transaction_body = builder.build(change_address=send_from_addr)
+    if signing_keys:
+        signed_tx = builder.build_and_sign(
+            signing_keys=signing_keys,
+            change_address=send_from_addr,
+        )
+        return signed_tx
+    else:
+        transaction_body = builder.build(change_address=send_from_addr)
 
-    return Transaction(transaction_body, builder.build_witness_set())
+        return Transaction(transaction_body, builder.build_witness_set())
