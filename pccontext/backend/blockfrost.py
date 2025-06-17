@@ -12,7 +12,7 @@ from pycardano.backend.base import ProtocolParameters as PyCardanoProtocolParame
 from pycardano.exception import TransactionFailedException
 from pycardano.hash import SCRIPT_HASH_SIZE, DatumHash, ScriptHash
 from pycardano.nativescript import NativeScript
-from pycardano.network import Network
+from pycardano.network import Network as PyCardanoNetwork
 from pycardano.plutus import (
     ExecutionUnits,
     PlutusV1Script,
@@ -32,7 +32,9 @@ from pycardano.transaction import (
 )
 from pycardano.types import JsonDict
 
+from pccontext.enums import Network
 from pccontext.backend import ChainContext
+from pccontext.exceptions import BlockfrostError
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
 
 __all__ = ["BlockFrostChainContext"]
@@ -60,6 +62,7 @@ class BlockFrostChainContext(ChainContext):
     """
 
     api: BlockFrostApi
+    _network: Network
     _epoch_info: Namespace
     _epoch: Optional[int] = None
     _genesis_param: Optional[GenesisParameters] = None
@@ -71,28 +74,52 @@ class BlockFrostChainContext(ChainContext):
         network: Optional[Network] = None,
         base_url: Optional[str] = None,
     ):
+        if not project_id:
+            raise ValueError("Project ID must be provided.")
+
         if network is not None:
-            warnings.warn(
-                "`network` argument will be deprecated in the future. Directly passing `base_url` is recommended."
-            )
             self._network = network
+        elif project_id.startswith("mainnet"):
+            self._network = Network.MAINNET
+        elif project_id.startswith("preprod"):
+            self._network = Network.PREPROD
+        elif project_id.startswith("preview"):
+            self._network = Network.PREVIEW
         else:
-            self._network = Network.TESTNET
+            raise ValueError(
+                "Project ID might not be valid. Or try specifying the network explicitly."
+            )
+
+        if base_url is not None:
+            self._base_url = base_url
+        elif self._network == Network.MAINNET:
+            self._base_url = ApiUrls.mainnet.value
+        elif self._network == Network.PREPROD:
+            self._base_url = ApiUrls.preprod.value
+        elif self._network == Network.PREVIEW:
+            self._base_url = ApiUrls.preview.value
+        else:
+            raise ValueError(
+                "Project ID might not be valid. Or try specifying the network explicitly."
+            )
 
         self._project_id = project_id
-        self._base_url = base_url or (
-            ApiUrls.preprod.value
-            if self.network == Network.TESTNET
-            else ApiUrls.mainnet.value
-        )
-
-        # Set network value to mainnet if base_url contains "mainnet".
-        if "mainnet" in self._base_url:
-            self._network = Network.MAINNET
 
         self.api = BlockFrostApi(project_id=self._project_id, base_url=self._base_url)
-        self._epoch_info = self.api.epoch_latest()
-        self._epoch = None
+
+        try:
+            self._epoch_info = self.api.epoch_latest()
+            self._epoch = self._epoch_info.epoch
+        except ApiError as e:
+            if e.status_code == 404:
+                raise BlockfrostError(
+                    f"Failed to fetch epoch information. Please check your project ID and network: {e.message}"
+                ) from e
+            else:
+                raise BlockfrostError(
+                    f"An error occurred while fetching epoch information: {e.message}"
+                ) from e
+
         self._genesis_param = None
         self._protocol_param = None
 
@@ -103,8 +130,8 @@ class BlockFrostChainContext(ChainContext):
         return True
 
     @property
-    def network(self) -> Network:
-        return self._network
+    def network(self) -> PyCardanoNetwork:
+        return self._network.get_network()
 
     @property
     def epoch(self) -> int:
@@ -284,15 +311,20 @@ class BlockFrostChainContext(ChainContext):
         Returns:
             List[StakeAddressInfo]: The stake address information.
         """
-        rewards_state = self.api.accounts(stake_address)
+        try:
+            rewards_state = self.api.accounts(stake_address)
 
-        return [
-            StakeAddressInfo(
-                active=rewards_state.active,
-                active_epoch=rewards_state.active_epoch,
-                address=rewards_state.stake_address,
-                stake_delegation=rewards_state.pool_id,
-                reward_account_balance=int(rewards_state.withdrawable_amount),
-                delegate_representative=rewards_state.drep_id,
-            )
-        ]
+            return [
+                StakeAddressInfo(
+                    active=rewards_state.active,
+                    active_epoch=rewards_state.active_epoch,
+                    address=rewards_state.stake_address,
+                    stake_delegation=rewards_state.pool_id,
+                    reward_account_balance=int(rewards_state.withdrawable_amount),
+                    delegate_representative=rewards_state.drep_id,
+                )
+            ]
+        except ApiError as e:
+            raise BlockfrostError(
+                f"Failed to fetch stake address info for {stake_address}. {e}"
+            ) from e
