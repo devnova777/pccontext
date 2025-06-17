@@ -14,7 +14,6 @@ from pycardano.crypto.bech32 import CHARSET
 from pccontext import (
     DATE_FORMAT_2,
     CardanoCliChainContext,
-    CardanoCliNetwork,
     OgmiosChainContext,
     YaciDevkitChainContext,
 )
@@ -861,7 +860,7 @@ def chain_context(
             binary=Path("cardano-cli"),
             socket=Path("node.socket"),
             config_file=config_file,
-            network=CardanoCliNetwork.PREPROD,
+            network=Network.PREPROD,
         )
         context._run_command = override_run_command
     return context
@@ -1706,10 +1705,8 @@ def config_file(
 
     yield config_file_path
 
-    try:
+    with contextlib.suppress(FileNotFoundError):
         config_file_path.unlink()
-    except FileNotFoundError:
-        pass
 
 
 @pytest.fixture()

@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 from pycardano import Address, StakeSigningKey, StakeVerificationKey
 
-from pccontext import CardanoCliChainContext, CardanoCliNetwork
+from pccontext import CardanoCliChainContext, Network
 from pccontext.transactions.stake_address_deregistration import (
     stake_address_deregistration,
 )
@@ -59,7 +59,7 @@ def deregistration_chain_context(
             binary=Path("cardano-cli"),
             socket=Path("node.socket"),
             config_file=config_file,
-            network=CardanoCliNetwork.PREPROD,
+            network=Network.PREPROD,
         )
         context._run_command = override_run_command
     return context

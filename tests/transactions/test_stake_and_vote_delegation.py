@@ -14,7 +14,7 @@ from pycardano import (
     VerificationKeyHash,
 )
 
-from pccontext import CardanoCliChainContext, CardanoCliNetwork
+from pccontext import CardanoCliChainContext, Network
 from pccontext.transactions.stake_and_vote_delegation import stake_and_vote_delegation
 
 
@@ -65,7 +65,7 @@ def delegation_chain_context(
             binary=Path("cardano-cli"),
             socket=Path("node.socket"),
             config_file=config_file,
-            network=CardanoCliNetwork.PREPROD,
+            network=Network.PREPROD,
         )
         context._run_command = override_run_command
     return context

@@ -29,10 +29,7 @@ def test_sign_transaction(
 
     tx_body = transaction.transaction_body
 
-    keys = [
-        (payment_vkey, payment_skey),
-        (stake_vkey, stake_skey),
-    ]
+    keys = [payment_skey, stake_skey]
 
     signed_tx = sign_transaction(
         tx_body=tx_body,
