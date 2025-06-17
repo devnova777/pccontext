@@ -7,8 +7,6 @@ import os
 import subprocess
 import tempfile
 import time
-from enum import Enum
-from functools import partial
 from pathlib import Path
 from typing import List, Optional, Union
 
@@ -25,7 +23,7 @@ from pycardano.exception import (
 )
 from pycardano.hash import DatumHash, ScriptHash
 from pycardano.nativescript import NativeScript
-from pycardano.network import Network
+from pycardano.network import Network as PyCardanoNetwork
 from pycardano.plutus import (
     Datum,
     PlutusV1Script,
@@ -46,42 +44,10 @@ from pycardano.transaction import (
 from pycardano.types import JsonDict
 
 from pccontext.backend import ChainContext
+from pccontext.enums import Network
 from pccontext.models import GenesisParameters, ProtocolParameters, StakeAddressInfo
-from pccontext.utils.validators import greater_than_version
 
-if greater_than_version((3, 13)):
-    from enum import member  # type: ignore[attr-defined]
-
-__all__ = ["CardanoCliChainContext", "CardanoCliNetwork", "DockerConfig"]
-
-
-def network_magic(magic_number: int) -> List[str]:
-    """
-    Returns the network magic number for the cardano-cli
-    Args:
-        magic_number: The network magic number
-
-    Returns:
-        The network magic number arguments
-    """
-    return ["--testnet-magic", str(magic_number)]
-
-
-class CardanoCliNetwork(Enum):
-    """
-    Enum class for Cardano Era
-    """
-
-    MAINNET = ["--mainnet"]
-    TESTNET = ["--testnet-magic", str(1097911063)]
-    PREVIEW = ["--testnet-magic", str(2)]
-    PREPROD = ["--testnet-magic", str(1)]
-    GUILDNET = ["--testnet-magic", str(141)]
-    CUSTOM = (
-        member(partial(network_magic))
-        if greater_than_version((3, 13))
-        else partial(network_magic)
-    )
+__all__ = ["CardanoCliChainContext", "DockerConfig"]
 
 
 class DockerConfig:
@@ -104,7 +70,7 @@ class CardanoCliChainContext(ChainContext):
     _binary: Path
     _socket: Optional[Path]
     _config_file: Path
-    _network: CardanoCliNetwork
+    _network: Network
     _last_known_block_slot: int
     _last_chain_tip_fetch: float
     _genesis_param: Optional[GenesisParameters]
@@ -119,7 +85,7 @@ class CardanoCliChainContext(ChainContext):
         binary: Path,
         socket: Path,
         config_file: Path,
-        network: CardanoCliNetwork,
+        network: Network,
         refetch_chain_tip_interval: Optional[float] = None,
         utxo_cache_size: int = 10000,
         datum_cache_size: int = 10000,
@@ -172,10 +138,10 @@ class CardanoCliChainContext(ChainContext):
 
     @property
     def _network_args(self) -> List[str]:
-        if self._network is CardanoCliNetwork.CUSTOM:
-            return self._network.value(self._network_magic_number)
+        if self._network is Network.CUSTOM:
+            return self._network.get_cli_network_args(self._network_magic_number)
         else:
-            return self._network.value
+            return self._network.get_cli_network_args()
 
     def _run_command(self, cmd: List[str]) -> str:
         """
@@ -257,11 +223,9 @@ class CardanoCliChainContext(ChainContext):
         return self._genesis_param
 
     @property
-    def network(self) -> Network:
+    def network(self) -> PyCardanoNetwork:
         """Cet current network"""
-        if self._network == CardanoCliNetwork.MAINNET:
-            return Network.MAINNET
-        return Network.TESTNET
+        return self._network.get_network()
 
     @property
     def epoch(self) -> int:
@@ -422,19 +386,19 @@ class CardanoCliChainContext(ChainContext):
 
             try:
                 self._run_command(
-                    ["transaction", "submit", "--tx-file", tmp_tx_file.name]
+                    [
+                        "latest",
+                        "transaction",
+                        "submit",
+                        "--tx-file",
+                        tmp_tx_file.name,
+                    ]
                     + self._network_args
                 )
             except CardanoCliError:
                 try:
                     self._run_command(
-                        [
-                            "latest",
-                            "transaction",
-                            "submit",
-                            "--tx-file",
-                            tmp_tx_file.name,
-                        ]
+                        ["transaction", "submit", "--tx-file", tmp_tx_file.name]
                         + self._network_args
                     )
                 except CardanoCliError as err:
@@ -445,12 +409,12 @@ class CardanoCliChainContext(ChainContext):
             # Get the transaction ID
             try:
                 txid = self._run_command(
-                    ["transaction", "txid", "--tx-file", tmp_tx_file.name]
+                    ["latest", "transaction", "txid", "--tx-file", tmp_tx_file.name]
                 )
             except CardanoCliError:
                 try:
                     txid = self._run_command(
-                        ["latest", "transaction", "txid", "--tx-file", tmp_tx_file.name]
+                        ["transaction", "txid", "--tx-file", tmp_tx_file.name]
                     )
                 except CardanoCliError as err:
                     raise PyCardanoException(
