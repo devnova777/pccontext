@@ -1,6 +1,6 @@
 from typing import List
 
-from pycardano import SigningKey, VerificationKeyWitness, Transaction
+from pycardano import SigningKey, Transaction, VerificationKeyWitness
 
 
 def witness(
