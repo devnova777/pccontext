@@ -1,3 +1,13 @@
+## 0.5.1 (2025-07-21)
+
+### Fix
+
+- update transaction handling in assemble, sign, and witness functions to use entire transaction
+
+### Refactor
+
+- streamline transaction handling in stake address functions
+
 ## 0.5.0 (2025-06-17)
 
 ### Feat
