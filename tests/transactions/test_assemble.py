@@ -28,15 +28,17 @@ def test_assemble_transaction(
     )
     transaction = stake_address_registration(chain_context, stake_vkey, address)
 
-    tx_body = transaction.transaction_body
-
     vkey_witnesses = [
-        VerificationKeyWitness(payment_vkey, payment_skey.sign(tx_body.hash())),
-        VerificationKeyWitness(stake_vkey, stake_skey.sign(tx_body.hash())),
+        VerificationKeyWitness(
+            payment_vkey, payment_skey.sign(transaction.transaction_body.hash())
+        ),
+        VerificationKeyWitness(
+            stake_vkey, stake_skey.sign(transaction.transaction_body.hash())
+        ),
     ]
 
     assembled_tx = assemble_transaction(
-        tx_body=tx_body,
+        transaction=transaction,
         vkey_witnesses=vkey_witnesses,
     )
 

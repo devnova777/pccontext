@@ -8,14 +8,13 @@ from pycardano import (
     PlutusV3Script,
     Redeemers,
     Transaction,
-    TransactionBody,
     TransactionWitnessSet,
     VerificationKeyWitness,
 )
 
 
 def assemble_transaction(
-    tx_body: TransactionBody,
+    transaction: Transaction,
     vkey_witnesses: Optional[
         Union[List[VerificationKeyWitness], NonEmptyOrderedSet[VerificationKeyWitness]]
     ] = None,
@@ -36,9 +35,9 @@ def assemble_transaction(
     ] = None,
 ) -> Transaction:
     """
-    Assembles a transaction with the provided transaction body and witnesses.
+    Assembles a transaction with the provided transaction and witnesses.
 
-    :param tx_body: The transaction body.
+    :param transaction: The transaction.
     :param vkey_witnesses: Optional list of verification key witnesses.
     :param native_scripts: Optional list of native scripts.
     :param bootstrap_witness: Optional list of bootstrap witnesses.
@@ -49,16 +48,15 @@ def assemble_transaction(
     :param plutus_v3_script: Optional list of Plutus V3 scripts.
     :return: The assembled transaction.
     """
-    return Transaction(
-        tx_body,
-        TransactionWitnessSet(
-            vkey_witnesses=vkey_witnesses,
-            native_scripts=native_scripts,
-            bootstrap_witness=bootstrap_witness,
-            plutus_v1_script=plutus_v1_script,
-            plutus_data=plutus_data,
-            redeemer=redeemer,
-            plutus_v2_script=plutus_v2_script,
-            plutus_v3_script=plutus_v3_script,
-        ),
+    transaction.transaction_witness_set = TransactionWitnessSet(
+        vkey_witnesses=vkey_witnesses,
+        native_scripts=native_scripts,
+        bootstrap_witness=bootstrap_witness,
+        plutus_v1_script=plutus_v1_script,
+        plutus_data=plutus_data,
+        redeemer=redeemer,
+        plutus_v2_script=plutus_v2_script,
+        plutus_v3_script=plutus_v3_script,
     )
+
+    return transaction

@@ -27,14 +27,9 @@ def test_sign_transaction(
     )
     transaction = stake_address_registration(chain_context, stake_vkey, address)
 
-    tx_body = transaction.transaction_body
-
     keys = [payment_skey, stake_skey]
 
-    signed_tx = sign_transaction(
-        tx_body=tx_body,
-        keys=keys,
-    )
+    signed_tx = sign_transaction(transaction=transaction, keys=keys)
 
     assert signed_tx is not None
     assert signed_tx.transaction_body == transaction.transaction_body
