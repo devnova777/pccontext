@@ -61,13 +61,12 @@ def withdraw_rewards(
     builder.withdrawals = withdrawal
 
     if signing_keys:
-        signed_tx = builder.build_and_sign(
-            signing_keys=signing_keys, change_address=send_from_addr, merge_change=True
-        )
-        return signed_tx
-    else:
-        transaction_body = builder.build(
-            change_address=send_from_addr, merge_change=True
+        return builder.build_and_sign(
+            signing_keys=signing_keys,
+            change_address=send_from_addr,
+            merge_change=True,
         )
 
-        return Transaction(transaction_body, builder.build_witness_set())
+    transaction_body = builder.build(change_address=send_from_addr, merge_change=True)
+
+    return Transaction(transaction_body, builder.build_witness_set())

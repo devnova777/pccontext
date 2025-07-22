@@ -47,12 +47,11 @@ def vote_delegation(
     builder.certificates = [vote_delegation_certificate]
 
     if signing_keys:
-        signed_tx = builder.build_and_sign(
+        return builder.build_and_sign(
             signing_keys=signing_keys,
             change_address=send_from_addr,
         )
-        return signed_tx
-    else:
-        transaction_body = builder.build(change_address=send_from_addr)
 
-        return Transaction(transaction_body, builder.build_witness_set())
+    transaction_body = builder.build(change_address=send_from_addr)
+
+    return Transaction(transaction_body, builder.build_witness_set())
