@@ -1,4 +1,4 @@
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, TypeVar, Union
 
 from pycardano import (
     NativeScript,
@@ -8,9 +8,32 @@ from pycardano import (
     PlutusV3Script,
     Redeemers,
     Transaction,
-    TransactionWitnessSet,
     VerificationKeyWitness,
 )
+
+T = TypeVar("T")
+
+
+def _update_witness_set(
+    witness_set_attr: Optional[Union[List[T], NonEmptyOrderedSet[T]]],
+    new_witnesses: Union[List[T], NonEmptyOrderedSet[T]],
+) -> Union[List[T], NonEmptyOrderedSet[T]]:
+    """Helper function to update a witness set with new witnesses."""
+    if witness_set_attr is None:
+        return new_witnesses
+
+    if isinstance(new_witnesses, list):
+        if isinstance(witness_set_attr, list):
+            witness_set_attr.extend(new_witnesses)
+        else:
+            witness_set_attr.extend(list(new_witnesses))
+    elif isinstance(new_witnesses, NonEmptyOrderedSet):
+        if isinstance(witness_set_attr, list):
+            witness_set_attr.extend(list(new_witnesses))
+        else:
+            witness_set_attr.extend(list(new_witnesses))
+
+    return witness_set_attr
 
 
 def assemble_transaction(
@@ -48,15 +71,38 @@ def assemble_transaction(
     :param plutus_v3_script: Optional list of Plutus V3 scripts.
     :return: The assembled transaction.
     """
-    transaction.transaction_witness_set = TransactionWitnessSet(
-        vkey_witnesses=vkey_witnesses,
-        native_scripts=native_scripts,
-        bootstrap_witness=bootstrap_witness,
-        plutus_v1_script=plutus_v1_script,
-        plutus_data=plutus_data,
-        redeemer=redeemer,
-        plutus_v2_script=plutus_v2_script,
-        plutus_v3_script=plutus_v3_script,
-    )
+    if vkey_witnesses:
+        transaction.transaction_witness_set.vkey_witnesses = _update_witness_set(
+            transaction.transaction_witness_set.vkey_witnesses, vkey_witnesses
+        )
+
+    if native_scripts:
+        transaction.transaction_witness_set.native_scripts = _update_witness_set(
+            transaction.transaction_witness_set.native_scripts, native_scripts
+        )
+
+    if bootstrap_witness is not None:
+        transaction.transaction_witness_set.bootstrap_witness.extend(bootstrap_witness)
+
+    if plutus_data is not None:
+        transaction.transaction_witness_set.plutus_data.extend(plutus_data)
+
+    if redeemer is not None:
+        transaction.transaction_witness_set.redeemer = redeemer
+
+    if plutus_v1_script:
+        transaction.transaction_witness_set.plutus_v1_script = _update_witness_set(
+            transaction.transaction_witness_set.plutus_v1_script, plutus_v1_script
+        )
+
+    if plutus_v2_script:
+        transaction.transaction_witness_set.plutus_v2_script = _update_witness_set(
+            transaction.transaction_witness_set.plutus_v2_script, plutus_v2_script
+        )
+
+    if plutus_v3_script:
+        transaction.transaction_witness_set.plutus_v3_script = _update_witness_set(
+            transaction.transaction_witness_set.plutus_v3_script, plutus_v3_script
+        )
 
     return transaction
