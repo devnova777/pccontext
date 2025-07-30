@@ -1,3 +1,9 @@
+## 0.5.2 (2025-07-30)
+
+### Fix
+
+- pass initial transaction witness set to be updated rather than overwritten
+
 ## 0.5.1 (2025-07-21)
 
 ### Fix
