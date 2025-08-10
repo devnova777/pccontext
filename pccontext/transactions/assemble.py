@@ -85,7 +85,9 @@ def assemble_transaction(
         transaction.transaction_witness_set.bootstrap_witness.extend(bootstrap_witness)
 
     if plutus_data is not None:
-        transaction.transaction_witness_set.plutus_data.extend(plutus_data)
+        transaction.transaction_witness_set.plutus_data = _update_witness_set(
+            transaction.transaction_witness_set.plutus_data, plutus_data
+        )
 
     if redeemer is not None:
         transaction.transaction_witness_set.redeemer = redeemer
