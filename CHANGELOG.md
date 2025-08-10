@@ -1,3 +1,9 @@
+## 0.5.3 (2025-08-09)
+
+### Fix
+
+- update plutus data in transaction witness set instead of extending
+
 ## 0.5.2 (2025-07-30)
 
 ### Fix

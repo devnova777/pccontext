@@ -1,5 +1,5 @@
 # flake8: noqa
-__version__ = "0.5.2"
+__version__ = "0.5.3"
 __app_name__ = "pccontext"
 
 from .backend import *
