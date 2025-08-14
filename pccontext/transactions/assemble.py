@@ -9,6 +9,7 @@ from pycardano import (
     Redeemers,
     Transaction,
     VerificationKeyWitness,
+    IndefiniteList,
 )
 
 T = TypeVar("T")
@@ -48,7 +49,9 @@ def assemble_transaction(
     plutus_v1_script: Optional[
         Union[List[PlutusV1Script], NonEmptyOrderedSet[PlutusV1Script]]
     ] = None,
-    plutus_data: Optional[List[Any]] = None,
+    plutus_data: Optional[
+        Union[IndefiniteList, List[Any], NonEmptyOrderedSet[Any]]
+    ] = None,
     redeemer: Optional[Redeemers] = None,
     plutus_v2_script: Optional[
         Union[List[PlutusV2Script], NonEmptyOrderedSet[PlutusV2Script]]
@@ -81,15 +84,15 @@ def assemble_transaction(
             transaction.transaction_witness_set.native_scripts, native_scripts
         )
 
-    if bootstrap_witness is not None:
+    if bootstrap_witness:
         transaction.transaction_witness_set.bootstrap_witness.extend(bootstrap_witness)
 
-    if plutus_data is not None:
+    if plutus_data:
         transaction.transaction_witness_set.plutus_data = _update_witness_set(
             transaction.transaction_witness_set.plutus_data, plutus_data
         )
 
-    if redeemer is not None:
+    if redeemer:
         transaction.transaction_witness_set.redeemer = redeemer
 
     if plutus_v1_script:
