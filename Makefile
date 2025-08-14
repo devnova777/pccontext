@@ -84,3 +84,18 @@ changelog: ## Update changelog
 
 bump: ## Bump version according to changelog
 	cz bump
+
+ensure-pure-cbor2: ## ensures cbor2 is installed with pure Python implementation
+	@poetry run python -c "from importlib.metadata import version; \
+	print(version('cbor2'))" > .cbor2_version
+	@poetry run python -c "import cbor2, inspect; \
+	print('Checking cbor2 implementation...'); \
+	decoder_path = inspect.getfile(cbor2.CBORDecoder); \
+	using_c_ext = decoder_path.endswith('.so'); \
+	print(f'Implementation path: {decoder_path}'); \
+	print(f'Using C extension: {using_c_ext}'); \
+	exit(1 if using_c_ext else 0)" || \
+	(echo "Reinstalling cbor2 with pure Python implementation..." && \
+	poetry run pip uninstall -y cbor2 && \
+	CBOR2_BUILD_C_EXTENSION=0 poetry run pip install --no-binary cbor2 "cbor2==$$(cat .cbor2_version)" --force-reinstall && \
+	rm .cbor2_version)
