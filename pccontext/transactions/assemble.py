@@ -1,6 +1,7 @@
 from typing import Any, List, Optional, TypeVar, Union
 
 from pycardano import (
+    IndefiniteList,
     NativeScript,
     NonEmptyOrderedSet,
     PlutusV1Script,
@@ -9,7 +10,6 @@ from pycardano import (
     Redeemers,
     Transaction,
     VerificationKeyWitness,
-    IndefiniteList,
 )
 
 T = TypeVar("T")
