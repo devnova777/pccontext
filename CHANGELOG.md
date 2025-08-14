@@ -1,3 +1,9 @@
+## 0.5.4 (2025-08-14)
+
+### Fix
+
+- allow multiple types for plutus_data in transaction witness set
+
 ## 0.5.3 (2025-08-09)
 
 ### Fix
