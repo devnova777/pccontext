@@ -447,10 +447,3 @@ chain_context.submit_tx(signed_withdraw_rewards_tx)
 
 </details>
 
-#### Notes
-
-- All transaction functions return a `Transaction` object 
-- When `signing_keys` are provided, the transaction is automatically signed
-- When `signing_keys` are not provided, you get an unsigned transaction that needs to be signed separately
-- Pool IDs should be provided as hex strings without the "pool" prefix
-- DRep IDs should be provided as hex strings or you can use the special DRep kinds (ALWAYS_ABSTAIN, ALWAYS_NO_CONFIDENCE)
